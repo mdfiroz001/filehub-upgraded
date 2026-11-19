@@ -1163,10 +1163,22 @@
                 isAIPrompt: true,
                 promptIndex: i,
                 prompt_text: p.prompt || '',
-                detail_photos: p.detail_photos || [],
+                detail_photos: normalizePhotoList(p.detail_photos),
                 created_at: p.created_at || Date.now()
             };
         });
+    }
+
+    // Firebase can return an array as an object when a list has been edited,
+    // so always rebuild the photo list by numeric key and preserve its order.
+    function normalizePhotoList(value) {
+        if (Array.isArray(value)) return value.map(function(url) { return String(url || '').trim(); }).filter(Boolean);
+        if (!value || typeof value !== 'object') return [];
+        return Object.keys(value).sort(function(a, b) {
+            const an = Number(a), bn = Number(b);
+            if (Number.isFinite(an) && Number.isFinite(bn)) return an - bn;
+            return a.localeCompare(b);
+        }).map(function(key) { return String(value[key] || '').trim(); }).filter(Boolean);
     }
 
     function isAIPromptId(id) {
@@ -2016,7 +2028,7 @@
                     isAIPrompt: true,
                     prompt_text: promptData.prompt || '',
                     geminiUrl: geminiUrl,
-                    detail_photos: promptData.detail_photos || []
+                    detail_photos: normalizePhotoList(promptData.detail_photos)
                 };
 
                 document.title = item.title + ' - FileHub';
@@ -2032,8 +2044,9 @@
                 }
 
                 let carouselHTML = '';
-                const photos = (item.detail_photos && item.detail_photos.length > 0) 
-                    ? item.detail_photos 
+                const normalizedPhotos = normalizePhotoList(item.detail_photos);
+                const photos = (normalizedPhotos.length > 0)
+                    ? normalizedPhotos
                     : (item.thumbnail_url ? [item.thumbnail_url] : []);
                 
                 if (photos.length > 0) {
@@ -2089,12 +2102,13 @@
             }
 
             let carouselHTML = '';
-            if (item.detail_photos && item.detail_photos.length > 0) {
-                const dots = item.detail_photos.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
+            const detailPhotos = normalizePhotoList(item.detail_photos);
+            if (detailPhotos.length > 0) {
+                const dots = detailPhotos.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
                 carouselHTML = 
                     '<div class="carousel-wrap" id="detailWrap">' +
                         '<div class="carousel-inner" id="detailInner">' +
-                            item.detail_photos.map(function(u) { return '<div class="slide"><img src="' + escapeHtmlUser(u) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div>'; }).join('') +
+                            detailPhotos.map(function(u) { return '<div class="slide"><img src="' + escapeHtmlUser(u) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div>'; }).join('') +
                         '</div>' +
                     '</div>' +
                     '<div class="carousel-dots" id="detailDots">' + dots + '</div>';
@@ -2128,7 +2142,7 @@
                 '</div>';
             
             hljs.highlightAll();
-            if (item.detail_photos && item.detail_photos.length > 1) initCarousel('detailInner', 'detailDots', item.detail_photos.length, false);
+            if (detailPhotos.length > 1) initCarousel('detailInner', 'detailDots', detailPhotos.length, false);
 
             renderUnlockLogic(type, item, watched);
         } catch(e) { console.error(e); renderError('Connection Error', 'Failed to load content.'); }
@@ -2426,11 +2440,11 @@
         function update() { inner.style.transform = 'translateX(-' + (idx * 100) + '%)'; for(let i=0; i<dots.length; i++) dots[i].classList.remove('active'); if (dots[idx]) dots[idx].classList.add('active'); }
         function next() { idx = (idx + 1) % count; update(); }
         function prev() { idx = (idx - 1 + count) % count; update(); }
-        function startTimer() { interval = setInterval(next, 5000); if(isHome) bannerInterval = interval; else detailInterval = interval; }
+        function startTimer() { if (!isHome) return; interval = setInterval(next, 5000); bannerInterval = interval; }
         startTimer();
         let touchStartX = 0; let touchEndX = 0;
         inner.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; clearInterval(interval); }, {passive: true});
-        inner.addEventListener('touchend', function(e) { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 50) next(); if (touchEndX > touchStartX + 50) prev(); startTimer(); }, {passive: true});
+        inner.addEventListener('touchend', function(e) { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 50) next(); if (touchEndX > touchStartX + 50) prev(); if (isHome) startTimer(); }, {passive: true});
     }
 
     function renderUpload() {

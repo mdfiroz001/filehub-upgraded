@@ -147,10 +147,71 @@
         .search-overlay.active { transform: scaleX(1); }
         .search-box-wrapper { flex: 1; display: flex; align-items: center; height: 40px; border: 1.5px solid var(--border); border-radius: 50px; background: var(--bg); padding: 0 5px; }
         .search-input { flex: 1; border: none; background: transparent; padding: 0 5px; color: var(--text-main); outline: none; }
-        .search-back-btn, .search-clear-btn { background: none; border: none; color: var(--text-sub); width: 35px; cursor: display: flex; justify-content: center; align-items: center; }
+        .search-back-btn, .search-clear-btn { background: none; border: none; color: var(--text-sub); width: 35px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
         .search-clear-btn { visibility: hidden; } .search-clear-btn.visible { visibility: visible; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* ==================== ফিক্স: নোটিশ বোর্ড স্মুথ স্ক্রলিং ==================== */
+        .scrolling-notice-container {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 9px 16px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            gap: 12px;
+        }
+
+        .scrolling-notice-container i {
+            font-size: 1.05rem;
+            flex-shrink: 0;
+            color: #facc15;
+        }
+
+        .notice-ticker-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .notice-ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: noticeScroll 18s linear infinite;
+            will-change: transform;
+        }
+
+        .notice-ticker-wrap:hover .notice-ticker-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes noticeScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .notice-action-btn {
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,.65);
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: .8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .notice-action-btn:hover { background: rgba(255,255,255,0.2); }
 
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .bottom-sheet-overlay.active { opacity: 1; visibility: visible; }
@@ -468,7 +529,7 @@
         .detail-desc table td { padding: 12px; border-top: 1px solid var(--border); background: var(--surface); }
         .detail-desc table tr:nth-child(even) td { background: var(--bg); }
 
-        /* ==================== ফিক্স: ডেসক্রিপশনের ইমেজ রেসপন্সিভ এবং সুন্দর ফরম্যাটিং ==================== */
+        /* ডেসক্রিপশনের ইমেজ রেসপন্সিভ স্টাইল */
         .detail-desc img {
             max-width: 100% !important;
             height: auto !important;
@@ -824,18 +885,6 @@
         }
         .copy-toast.show { transform: translateX(-50%) translateY(0); }
 
-        .scrolling-notice-container {
-            background: var(--primary); color: #ffffff;
-            padding: 8px 16px; font-size: 0.9rem; font-weight: 500;
-            display: flex; align-items: center; overflow: hidden;
-            border-radius: 12px; margin-bottom: 15px;
-            box-shadow: var(--shadow-md); position: relative; z-index: 10;
-        }
-        .scrolling-notice-container i {
-            margin-right: 10px; font-size: 1rem;
-            flex-shrink: 0; color: #facc15;
-        }
-
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .skeleton {
             background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-highlight) 50%, var(--skeleton-base) 75%);
@@ -866,9 +915,7 @@
         .welcome-secondary { color:var(--text-main); background:var(--bg); border:1px solid var(--border)!important; }
         .custom-slot { margin:16px 0; border-radius:16px; overflow:hidden; }
         .custom-slot:empty { display:none; }
-        .inline-notice { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-        .inline-notice a { color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.6); padding:6px 12px; border-radius:999px; font-size:.8rem; white-space:nowrap; }
-        @media(max-width:600px){.welcome-body{padding:22px}.welcome-actions{flex-direction:column}.inline-notice{align-items:flex-start;flex-direction:column}}
+        @media(max-width:600px){.welcome-body{padding:22px}.welcome-actions{flex-direction:column}}
     </style>
 </head>
 <body>
@@ -907,9 +954,15 @@
 </header>
 
 <div class="container">
+    <!-- ফিক্সড নোটিশ কনটেইনার -->
     <div id="scrolling-notice-container" class="scrolling-notice-container hidden">
-        <i class="fas fa-bullhorn"></i><div class="inline-notice" style="width:100%"><marquee id="scrolling-notice-text" direction="left" scrollamount="5" style="display:block;flex:1"></marquee><a id="notice-action" class="hidden" target="_blank" rel="noopener">Open</a></div>
+        <i class="fas fa-bullhorn"></i>
+        <div class="notice-ticker-wrap">
+            <span id="scrolling-notice-text" class="notice-ticker-content"></span>
+        </div>
+        <a id="notice-action" class="notice-action-btn hidden" target="_blank" rel="noopener">Open</a>
     </div>
+
     <div id="header-ad-slot" class="custom-slot"></div>
     <nav class="quick-nav" aria-label="Content navigation">
         <button data-route="/" onclick="navigateTo('/')"><i class="fas fa-home"></i> Overview</button>
@@ -1238,7 +1291,7 @@
 
     function updateThemeIcon(mode) {
         if (mode === 'dark') themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-        else themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        else themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
     }
 
     function updateThemeColor(mode) {
@@ -1405,17 +1458,47 @@
     }
 
     function applyAppSettings() {
-        const appCfg=appSettings.app||{}, ads=appSettings.ads||{};
-        const primary=appCfg.primaryColor||'#4f46e5', accent=appCfg.accentColor||'#818cf8';
-        document.documentElement.style.setProperty('--primary',primary); document.documentElement.style.setProperty('--primary-glow',primary+'66');
-        document.documentElement.style.setProperty('--primary-soft',primary+'20');
-        const brand=document.querySelector('.brand-text'); if(brand) brand.textContent=appCfg.appName||'FileHub';
-        const logo=appCfg.logoUrl; if(logo){ document.querySelectorAll('.brand-img').forEach(x=>x.src=logo); }
-        applyCustomCode('header-ad-slot',ads.headerCode||''); applyCustomCode('footer-ad-slot',ads.footerCode||'');
-        const notice=appCfg.scrollingNotice||''; const action=document.getElementById('notice-action');
-        if(notice){document.getElementById('scrolling-notice-container').classList.remove('hidden');document.getElementById('scrolling-notice-text').innerText=notice;} else document.getElementById('scrolling-notice-container').classList.add('hidden');
-        if(action && ads.noticeButtonUrl){action.href=ads.noticeButtonUrl; action.textContent=ads.noticeButtonText||'Open'; action.classList.remove('hidden');} else if(action) action.classList.add('hidden');
-        document.title=(appCfg.appName||'FileHub')+' — Secure File Sharing';
+        const appCfg = appSettings.app || {}, ads = appSettings.ads || {};
+        const primary = appCfg.primaryColor || '#4f46e5';
+        document.documentElement.style.setProperty('--primary', primary);
+        document.documentElement.style.setProperty('--primary-glow', primary + '66');
+        document.documentElement.style.setProperty('--primary-soft', primary + '20');
+
+        const brand = document.querySelector('.brand-text');
+        if (brand) brand.textContent = appCfg.appName || 'FileHub';
+        
+        const logo = appCfg.logoUrl;
+        if (logo) { document.querySelectorAll('.brand-img').forEach(x => x.src = logo); }
+
+        applyCustomCode('header-ad-slot', ads.headerCode || '');
+        applyCustomCode('footer-ad-slot', ads.footerCode || '');
+
+        // ফিক্সড নোটিশ স্ক্রলিং সেটআপ
+        const notice = appCfg.scrollingNotice || '';
+        const noticeContainer = document.getElementById('scrolling-notice-container');
+        const noticeText = document.getElementById('scrolling-notice-text');
+        const action = document.getElementById('notice-action');
+
+        if (notice && notice.trim() !== '') {
+            noticeContainer.classList.remove('hidden');
+            noticeText.textContent = notice;
+            
+            // লেখার দৈর্ঘ্য অনুযায়ী মসৃণ স্পিড নির্ধারণ (নূন্যতম ১২ সেকেন্ড, সর্বোচ্চ ৩০ সেকেন্ড)
+            const speed = Math.max(12, Math.min(30, notice.length * 0.35));
+            noticeText.style.animationDuration = speed + 's';
+        } else {
+            noticeContainer.classList.add('hidden');
+        }
+
+        if (action && ads.noticeButtonUrl) {
+            action.href = ads.noticeButtonUrl;
+            action.textContent = ads.noticeButtonText || 'Open';
+            action.classList.remove('hidden');
+        } else if (action) {
+            action.classList.add('hidden');
+        }
+
+        document.title = (appCfg.appName || 'FileHub') + ' — Secure File Sharing';
     }
 
     function showWelcomePopup(){ const cfg=appSettings.welcome||{}; if(cfg.enabled===false || !cfg.message || sessionStorage.getItem('fh_welcome_seen')) return; document.getElementById('welcomeTitle').textContent=cfg.title||'Welcome to FileHub'; document.getElementById('welcomeMessage').textContent=cfg.message; const b=document.getElementById('welcomeAction'); b.textContent=cfg.buttonText||'Explore now'; if(cfg.buttonUrl){b.onclick=function(){window.open(cfg.buttonUrl,'_blank','noopener');closeWelcomePopup();};} document.getElementById('welcomeOverlay').classList.add('active'); }
@@ -1433,13 +1516,6 @@
             appSettings = settingsSnap.val() || {};
 
             applyAppSettings();
-            const noticeText = appSettings.app && appSettings.app.scrollingNotice ? appSettings.app.scrollingNotice : null;
-            if (noticeText) {
-                document.getElementById('scrolling-notice-container').classList.remove('hidden');
-                document.getElementById('scrolling-notice-text').innerText = noticeText;
-            } else {
-                document.getElementById('scrolling-notice-container').classList.add('hidden');
-            }
             setTimeout(showWelcomePopup, 450);
         } catch (error) { console.error('Error loading data:', error); }
     }
@@ -2150,7 +2226,7 @@
             
             hljs.highlightAll();
 
-            // Description এ থাকা সব ছবিতে লাইটবক্স প্রিভিউ সক্রিয় করা
+            // Description এর সকল ইমেজে লাইটবক্স ইভেন্ট যুক্ত করা
             const descImages = document.querySelectorAll('.detail-desc img');
             descImages.forEach(function(img) {
                 img.addEventListener('click', function(e) {

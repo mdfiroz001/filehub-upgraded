@@ -855,4 +855,1812 @@
                 <button class="icon-btn" id="aiBtn"><img src="https://iili.io/fYWPezx.jpg" alt="AI" class="ai-icon-img" id="headerAiIcon" onerror="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"></button>
                 
                 <button class="icon-btn" id="notifBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="notif-badge" id="notifBadge">0</span>
+                </button>
+
+                <button class="icon-btn" id="themeToggle">
+                    <svg class="theme-icon-svg" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="searchTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+            </div>
+        </div>
+        <div class="search-overlay" id="searchOverlay">
+            <div class="search-box-wrapper">
+                <button class="search-back-btn" id="searchBack"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search...">
+                <button class="search-clear-btn" id="searchClear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div id="scrolling-notice-container" class="scrolling-notice-container hidden">
+        <i class="fas fa-bullhorn"></i><div class="inline-notice" style="width:100%"><marquee id="scrolling-notice-text" direction="left" scrollamount="5" style="display:block;flex:1"></marquee><a id="notice-action" class="hidden" target="_blank" rel="noopener">Open</a></div>
+    </div>
+    <div id="header-ad-slot" class="custom-slot"></div>
+    <nav class="quick-nav" aria-label="Content navigation">
+        <button data-route="/" onclick="navigateTo('/')"><i class="fas fa-home"></i> Overview</button>
+        <button data-route="/files" onclick="navigateTo('/files')"><i class="fas fa-folder-open"></i> Files</button>
+        <button data-route="/prompts" onclick="navigateTo('/prompts')"><i class="fas fa-wand-magic-sparkles"></i> Image Prompts</button>
+    </nav>
+    <div id="app"></div>
+    <div id="footer-ad-slot" class="custom-slot"></div>
+</div>
+
+<div class="welcome-overlay" id="welcomeOverlay"><div class="welcome-card"><div class="welcome-accent"></div><div class="welcome-body"><div class="welcome-icon"><i class="fas fa-sparkles"></i></div><h2 id="welcomeTitle">Welcome to FileHub</h2><p id="welcomeMessage"></p><div class="welcome-actions"><button class="welcome-secondary" onclick="closeWelcomePopup()">Maybe later</button><button class="welcome-primary" id="welcomeAction" onclick="closeWelcomePopup()">Explore now</button></div></div></div></div>
+
+<div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
+        <div id="authModalContent"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editProfileModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fas fa-times"></i></button>
+        <div id="editProfileModalContent"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="changePasswordModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('changePasswordModal')"><i class="fas fa-times"></i></button>
+        <div id="changePasswordModalContent"></div>
+    </div>
+</div>
+
+<div class="ad-popup-overlay" id="adPopup">
+    <div class="ad-popup">
+        <button class="ad-popup-close" onclick="closeAdPopup()"><i class="fas fa-times"></i></button>
+        <div class="ad-popup-icon" id="adPopupIcon">
+            <i class="fas fa-play-circle"></i>
+        </div>
+        <h3 class="ad-popup-title" id="adPopupTitle">Unlock Download</h3>
+        <p class="ad-popup-text" id="adPopupText">Click the button below to open an ad. Please wait at least 8 seconds before closing.</p>
+        <div class="ad-warning" id="adWarning">
+            <i class="fas fa-exclamation-triangle"></i> ৮ সেকেন্ডের আগে বন্ধ করলে এই স্টেপ আবার শুরু করতে হবে!
+        </div>
+        <div class="ad-timer-display" id="adTimerDisplay" style="display:none;">8</div>
+        <button class="ad-popup-btn" id="adPopupBtn" onclick="openAdsterraLink()">
+            <i class="fas fa-external-link-alt mr-2"></i> Open Ad & Unlock
+        </button>
+        <div class="ad-progress-bar" id="adProgressBar">
+            <div class="ad-progress-fill" id="adProgressFill"></div>
+        </div>
+        <div class="ad-popup-status" id="adPopupStatus"></div>
+    </div>
+</div>
+
+<div class="bottom-sheet-overlay" id="sheetOverlay"></div>
+<div class="bottom-sheet" id="notifSheet">
+    <div class="sheet-header">
+        <button class="sheet-btn sheet-left-btn" id="notifLeftBtn"></button>
+        <span class="sheet-title">Notifications</span>
+        <button class="sheet-btn" id="closeSheet">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+    </div>
+    <div class="sheet-body">
+        <div id="notifListView" class="view-container">
+            <ul class="notif-list" id="notifList"></ul>
+        </div>
+        <div id="notifDetailView" class="view-container notif-detail-view">
+            <div id="notifDetailContent"></div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-sheet" id="aiSheet">
+    <div class="sheet-header">
+        <button class="sheet-btn sheet-left-btn" id="aiExpandBtn"></button>
+        <span class="sheet-title">Assistant</span>
+        <button class="sheet-btn" id="closeAiSheet">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+    </div>
+    <div class="chat-container" id="chatList">
+        <div class="chat-bubble ai">
+            <img src="https://iili.io/fYWPWg9.jpg" class="ai-avatar" id="aiAvatar" onerror="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+            <div class="ai-content">হ্যালো! 👋 আমি FileHub AI অ্যাসিস্ট্যান্ট। আমি আপনাকে সাহায্য করতে এখানে আছি। যেকোনো প্রশ্ন করতে পারেন! 😊</div>
+        </div>
+    </div>
+    <div class="chat-footer">
+        <textarea id="chatInput" class="chat-input" placeholder="Type your message..." rows="1"></textarea>
+        <button id="chatSendBtn" class="chat-send-btn">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+        </button>
+    </div>
+</div>
+
+<div class="lightbox-overlay" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <img src="" class="lightbox-img" id="lightboxImg">
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-col">
+        <button class="nav-item" title="Upload" onclick="handleProtectedNavigation('/upload')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        </button>
+    </div>
+    <div class="nav-home-wrapper">
+        <button class="nav-home" title="Home" onclick="navigateTo('/')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
+    </div>
+    <div class="nav-col">
+        <button class="nav-item" title="Account" onclick="handleProtectedNavigation('/profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </button>
+    </div>
+</nav>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAgblSHPL02TI8lyw5XBRJEi4y3lUOlqKQ",
+        authDomain: "file-5dd84.firebaseapp.com",
+        databaseURL: "https://file-5dd84-default-rtdb.firebaseio.com",
+        projectId: "file-5dd84",
+        storageBucket: "file-5dd84.firebasestorage.app",
+        messagingSenderId: "425635065125",
+        appId: "1:425635065125:web:a8ce55b1745f301bb5becc",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    const usersRef = database.ref('users');
+    const filesRef = database.ref('files');
+    const bannersRef = database.ref('banners');
+    const notificationsRef = database.ref('notifications');
+    const settingsRef = database.ref('settings');
+    const chatsRef = database.ref('chats');
+
+    const HEAD_AI_LIGHT = "https://iili.io/fYWPezx.jpg";
+    const HEAD_AI_DARK = "https://iili.io/fYWPEs2.jpg";
+    const CHAT_AI_LIGHT = "https://iili.io/fYWPWg9.jpg";
+    const CHAT_AI_DARK = "https://iili.io/fYWPSqB.jpg";
+
+    const SVG_EXPAND = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+    const SVG_COLLAPSE = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+    const SVG_BACK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>';
+    const SVG_CHECK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    const SVG_LINK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>';
+
+    const app = document.getElementById('app');
+    const searchTrigger = document.getElementById('searchTrigger');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchBack = document.getElementById('searchBack');
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    
+    const notifBtn = document.getElementById('notifBtn');
+    const notifBadge = document.getElementById('notifBadge');
+    const sheetOverlay = document.getElementById('sheetOverlay');
+    const notifSheet = document.getElementById('notifSheet');
+    const closeSheet = document.getElementById('closeSheet');
+    const notifLeftBtn = document.getElementById('notifLeftBtn');
+    const notifList = document.getElementById('notifList');
+    const notifListView = document.getElementById('notifListView');
+    const notifDetailView = document.getElementById('notifDetailView');
+    const notifDetailContent = document.getElementById('notifDetailContent');
+
+    const aiBtn = document.getElementById('aiBtn');
+    const aiSheet = document.getElementById('aiSheet');
+    const closeAiSheet = document.getElementById('closeAiSheet');
+    const aiExpandBtn = document.getElementById('aiExpandBtn'); 
+    const chatList = document.getElementById('chatList');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    const adPopup = document.getElementById('adPopup');
+    const adPopupBtn = document.getElementById('adPopupBtn');
+    const adPopupStatus = document.getElementById('adPopupStatus');
+    const adPopupTitle = document.getElementById('adPopupTitle');
+    const adPopupText = document.getElementById('adPopupText');
+    const adProgressBar = document.getElementById('adProgressBar');
+    const adProgressFill = document.getElementById('adProgressFill');
+    const adTimerDisplay = document.getElementById('adTimerDisplay');
+    const adWarning = document.getElementById('adWarning');
+
+    let currentUser = null;
+    let currentUserData = null;
+    let isNotifExpanded = false;
+    let isAiExpanded = false;
+    let isNotifInDetail = false;
+    let allNotifications = [];
+    let allFiles = [];
+    let allBanners = [];
+    let appSettings = {};
+    let bannerInterval, detailInterval;
+    let notifListener = null;
+
+    const AD_REQUIRED_SECONDS = 8;
+    let pendingAdFileId = null;
+    let pendingAdType = null;
+    let pendingAdCurrentWatched = 0;
+    let pendingAdReq = 0;
+    let adWindowOpened = false;
+    let adTimerInterval = null;
+    let adCheckInterval = null;
+    let adSecondsElapsed = 0;
+    let adUnlockCompleted = false;
+
+    const AI_PROMPT_PREFIX = 'ai-prompt-';
+
+    function formatCount(n) {
+        if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'm';
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        return n;
+    }
+
+    function truncateExt(ext) {
+        if (!ext) return 'file';
+        if (ext.length > 5) return ext.substring(0, 5) + '..';
+        return ext;
+    }
+
+    function timeAgoShort(timestamp) {
+        if (!timestamp) return 'recent';
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + 'm ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + 'h ago';
+        const days = Math.floor(hours / 24);
+        if (days < 30) return days + 'd ago';
+        const months = Math.floor(days / 30);
+        return months + 'mo ago';
+    }
+
+    function escapeHtmlUser(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // ==================== CATEGORY DETECTION ====================
+    function getFileCategory(file) {
+        if (!file) return 'other';
+        if (file.isAIPrompt) return 'ai-prompt';
+        const ext = (file.file_extension || '').toLowerCase().replace('.', '');
+        if (ext === 'apk') return 'apk';
+        return 'file'; // zip, rar, html, php, pdf, etc.
+    }
+
+    function getAIPromptFiles() {
+        const imgSettings = appSettings.aiImage || {};
+        if (imgSettings.enabled === false) return [];
+        const prompts = imgSettings.prompts || [];
+        return prompts.map(function(p, i) {
+            return {
+                id: AI_PROMPT_PREFIX + i,
+                title: p.title || ('AI Prompt ' + (i + 1)),
+                description: p.prompt || '',
+                thumbnail_url: p.sample_image || '',
+                file_extension: '.ai',
+                required_ads: parseInt(p.required_ads) || 0,
+                status: 'approved',
+                isAIPrompt: true,
+                promptIndex: i,
+                prompt_text: p.prompt || '',
+                detail_photos: p.detail_photos || [],
+                created_at: p.created_at || Date.now()
+            };
+        });
+    }
+
+    function isAIPromptId(id) {
+        return typeof id === 'string' && id.startsWith(AI_PROMPT_PREFIX);
+    }
+
+    function getAIPromptByIndex(index) {
+        const imgSettings = appSettings.aiImage || {};
+        const prompts = imgSettings.prompts || [];
+        return prompts[index] || null;
+    }
+
+    const getHomeSkeleton = () => {
+        let html = '<div class="skeleton" style="width:100%; aspect-ratio:16/9; margin-bottom:20px;"></div>';
+        html += '<div class="skeleton" style="width:50%; height:25px; margin-bottom:20px;"></div>';
+        html += '<div class="file-grid">';
+        for(let i=0; i<4; i++) {
+            html += '<div style="background:var(--surface); border-radius:12px; padding:10px;"><div class="skeleton sk-img"></div><div class="skeleton sk-title"></div><div class="skeleton sk-text"></div></div>';
+        }
+        html += '</div>';
+        return html;
+    };
+
+    const getDetailSkeleton = () => {
+        return '<div class="skeleton" style="width:100%; aspect-ratio:16/9; margin-bottom:20px;"></div>' +
+            '<div class="skeleton" style="width:80%; height:30px; margin-bottom:15px;"></div>' +
+            '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:15px;">' +
+            '<div class="skeleton" style="width:80px; height:24px;"></div>' +
+            '<div class="skeleton" style="width:80px; height:24px;"></div>' +
+            '<div class="skeleton" style="width:80px; height:24px;"></div></div>' +
+            '<div class="skeleton" style="width:100%; height:100px; margin-top:20px;"></div>';
+    };
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        updateThemeColor(savedTheme);
+        updateDynamicImages(savedTheme);
+    }
+
+    function updateThemeIcon(mode) {
+        if (mode === 'dark') themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        else themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+    }
+
+    function updateThemeColor(mode) {
+        const color = mode === 'dark' ? '#1e293b' : '#ffffff';
+        let meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', color);
+    }
+
+    function getAiAvatarUrl(mode) { return mode === 'dark' ? CHAT_AI_DARK : CHAT_AI_LIGHT; }
+
+    function updateDynamicImages(mode) {
+        const headerIcon = document.getElementById('headerAiIcon');
+        if (headerIcon) headerIcon.src = mode === 'dark' ? HEAD_AI_DARK : HEAD_AI_LIGHT;
+        const chatAvatar = document.getElementById('aiAvatar');
+        if (chatAvatar) chatAvatar.src = mode === 'dark' ? CHAT_AI_DARK : CHAT_AI_LIGHT;
+        const spinner = document.querySelector('.ai-loading-img');
+        if (spinner) spinner.src = getAiAvatarUrl(mode);
+    }
+
+    themeToggle.addEventListener('click', function() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        updateThemeIcon(next);
+        updateThemeColor(next);
+        updateDynamicImages(next);
+        themeToggle.classList.add('theme-active');
+        setTimeout(function() { themeToggle.classList.remove('theme-active'); }, 500);
+        localStorage.setItem('theme', next);
+        if (currentUser) usersRef.child(currentUser.uid).child('theme').set(next).catch(console.warn);
+    });
+
+    auth.onAuthStateChanged(async (user) => {
+        if (user && !user.isAnonymous) {
+            currentUser = user;
+            try {
+                const userSnap = await usersRef.child(user.uid).once('value');
+                currentUserData = userSnap.val() || {};
+                
+                if (!currentUserData.numericId) {
+                    const newNumericId = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+                    await usersRef.child(user.uid).update({ numericId: newNumericId });
+                    currentUserData.numericId = newNumericId;
+                }
+
+                if (currentUserData.theme) {
+                    document.documentElement.setAttribute('data-theme', currentUserData.theme);
+                    updateThemeIcon(currentUserData.theme);
+                    updateThemeColor(currentUserData.theme);
+                    updateDynamicImages(currentUserData.theme);
+                    localStorage.setItem('theme', currentUserData.theme);
+                }
+                
+                loadNotifications();
+                loadChatHistory();
+            } catch(e) { console.error('User data error:', e); }
+        } else {
+            currentUser = null;
+            currentUserData = null;
+            allNotifications = [];
+            updateBadge();
+        }
+        handleRoute();
+    });
+
+    window.handleProtectedNavigation = (path) => {
+        if (currentUser) navigateTo(path);
+        else showAuthModal();
+    };
+
+    window.openModal = (modalId) => { document.getElementById(modalId).classList.add('active'); };
+    window.closeModal = (modalId) => { document.getElementById(modalId).classList.remove('active'); };
+
+    function showAuthModal() {
+        document.getElementById('authModalContent').innerHTML = 
+            '<div class="auth-form p-0" style="padding:0;box-shadow:none;">' +
+                '<div class="auth-header">' +
+                    '<img src="https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png" class="auth-logo" onerror="this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'">' +
+                    '<h1 class="auth-title">Welcome to FileHub</h1>' +
+                    '<p class="auth-subtitle">Secure file storage & sharing platform</p>' +
+                '</div>' +
+                '<div class="auth-tabs" id="authTabs">' +
+                    '<div class="auth-tab active" onclick="switchAuthTab(\'login\')">Login</div>' +
+                    '<div class="auth-tab" onclick="switchAuthTab(\'register\')">Register</div>' +
+                '</div>' +
+                '<div id="authAlert" class="alert hidden"></div>' +
+                '<form id="authForm">' +
+                    '<div id="registerFields" class="hidden">' +
+                        '<div class="form-group"><label class="form-label">Full Name</label><input type="text" id="regFullName" class="form-control" placeholder="John Doe"></div>' +
+                        '<div class="form-group"><label class="form-label">Username</label><input type="text" id="regUsername" class="form-control" placeholder="johndoe"></div>' +
+                    '</div>' +
+                    '<div class="form-group"><label class="form-label">Email</label><input type="email" id="authEmail" class="form-control" placeholder="your@email.com" required></div>' +
+                    '<div class="form-group"><label class="form-label">Password</label><input type="password" id="authPassword" class="form-control" placeholder="••••••••" required></div>' +
+                    '<button type="submit" class="btn btn-primary" id="authBtn"><i class="fas fa-sign-in-alt mr-2"></i> Login</button>' +
+                '</form>' +
+            '</div>';
+        document.getElementById('authForm').addEventListener('submit', handleAuth);
+        openModal('authModal');
+    }
+
+    window.switchAuthTab = (tab) => {
+        const tabs = document.querySelectorAll('.auth-tab');
+        const registerFields = document.getElementById('registerFields');
+        const authBtn = document.getElementById('authBtn');
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        event.target.classList.add('active');
+        if (tab === 'register') {
+            registerFields.classList.remove('hidden');
+            authBtn.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Register';
+        } else {
+            registerFields.classList.add('hidden');
+            authBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Login';
+        }
+    };
+
+    async function handleAuth(e) {
+        e.preventDefault();
+        const isLogin = document.getElementById('registerFields').classList.contains('hidden');
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        const authBtn = document.getElementById('authBtn');
+        authBtn.disabled = true; authBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        
+        try {
+            if (isLogin) {
+                await auth.signInWithEmailAndPassword(email, password);
+                showAuthAlert('Login successful!', 'success');
+                setTimeout(function() { closeModal('authModal'); navigateTo('/'); }, 1500);
+            } else {
+                const fullName = document.getElementById('regFullName').value;
+                const username = document.getElementById('regUsername').value;
+                if (!fullName || !username) throw new Error('Please fill in all fields');
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const numericId = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+                await usersRef.child(userCredential.user.uid).set({
+                    email: email, fullname: fullName, username: username,
+                    numericId: numericId, isAccountActive: true, balance: 0,
+                    adsWatched: 0, createdAt: Date.now(), theme: 'light'
+                });
+                showAuthAlert('Registration successful!', 'success');
+                setTimeout(function() { closeModal('authModal'); navigateTo('/'); }, 1500);
+            }
+        } catch (error) {
+            showAuthAlert(error.message, 'error');
+            authBtn.disabled = false;
+            authBtn.innerHTML = isLogin ? '<i class="fas fa-sign-in-alt mr-2"></i> Login' : '<i class="fas fa-user-plus mr-2"></i> Register';
+        }
+    }
+
+    function showAuthAlert(message, type) {
+        const alert = document.getElementById('authAlert');
+        alert.textContent = message;
+        alert.className = 'alert alert-' + type;
+        alert.classList.remove('hidden');
+    }
+
+
+    function applyCustomCode(slotId, code) {
+        const el=document.getElementById(slotId); if(!el) return; el.innerHTML='';
+        if(!code) return;
+        const tpl=document.createElement('template'); tpl.innerHTML=String(code);
+        el.appendChild(tpl.content.cloneNode(true));
+        el.querySelectorAll('script').forEach(function(old){ const s=document.createElement('script'); Array.from(old.attributes).forEach(x=>s.setAttribute(x.name,x.value)); s.textContent=old.textContent; old.replaceWith(s); });
+    }
+    function applyAppSettings() {
+        const appCfg=appSettings.app||{}, ads=appSettings.ads||{};
+        const primary=appCfg.primaryColor||'#4f46e5', accent=appCfg.accentColor||'#818cf8';
+        document.documentElement.style.setProperty('--primary',primary); document.documentElement.style.setProperty('--primary-glow',primary+'66');
+        document.documentElement.style.setProperty('--primary-soft',primary+'20');
+        const brand=document.querySelector('.brand-text'); if(brand) brand.textContent=appCfg.appName||'FileHub';
+        const logo=appCfg.logoUrl; if(logo){ document.querySelectorAll('.brand-img').forEach(x=>x.src=logo); }
+        applyCustomCode('header-ad-slot',ads.headerCode||''); applyCustomCode('footer-ad-slot',ads.footerCode||'');
+        const notice=appCfg.scrollingNotice||''; const action=document.getElementById('notice-action');
+        if(notice){document.getElementById('scrolling-notice-container').classList.remove('hidden');document.getElementById('scrolling-notice-text').innerText=notice;} else document.getElementById('scrolling-notice-container').classList.add('hidden');
+        if(action && ads.noticeButtonUrl){action.href=ads.noticeButtonUrl; action.textContent=ads.noticeButtonText||'Open'; action.classList.remove('hidden');} else if(action) action.classList.add('hidden');
+        document.title=(appCfg.appName||'FileHub')+' — Secure File Sharing';
+    }
+    function showWelcomePopup(){ const cfg=appSettings.welcome||{}; if(cfg.enabled===false || !cfg.message || sessionStorage.getItem('fh_welcome_seen')) return; document.getElementById('welcomeTitle').textContent=cfg.title||'Welcome to FileHub'; document.getElementById('welcomeMessage').textContent=cfg.message; const b=document.getElementById('welcomeAction'); b.textContent=cfg.buttonText||'Explore now'; if(cfg.buttonUrl){b.onclick=function(){window.open(cfg.buttonUrl,'_blank','noopener');closeWelcomePopup();};} document.getElementById('welcomeOverlay').classList.add('active'); }
+    window.closeWelcomePopup=function(){sessionStorage.setItem('fh_welcome_seen','1');document.getElementById('welcomeOverlay').classList.remove('active');};
+
+    async function loadData() {
+        try {
+            const filesSnap = await filesRef.once('value');
+            allFiles = filesSnap.val() ? Object.entries(filesSnap.val()).map(function(e) { return Object.assign({ id: e[0] }, e[1]); }) : [];
+            
+            const bannersSnap = await bannersRef.once('value');
+            allBanners = bannersSnap.val() ? Object.entries(bannersSnap.val()).map(function(e) { return Object.assign({ id: e[0] }, e[1]); }) : [];
+            
+            const settingsSnap = await settingsRef.once('value');
+            appSettings = settingsSnap.val() || {};
+
+            applyAppSettings();
+            const noticeText = appSettings.app && appSettings.app.scrollingNotice ? appSettings.app.scrollingNotice : null;
+            if (noticeText) {
+                document.getElementById('scrolling-notice-container').classList.remove('hidden');
+                document.getElementById('scrolling-notice-text').innerText = noticeText;
+            } else {
+                document.getElementById('scrolling-notice-container').classList.add('hidden');
+            }
+            setTimeout(showWelcomePopup, 450);
+        } catch (error) { console.error('Error loading data:', error); }
+    }
+
+    function loadNotifications() {
+        if (!currentUser) return;
+        if (notifListener) notifListener.off();
+        notifListener = notificationsRef.orderByChild('created_at').limitToLast(50);
+        notifListener.on('value', function(snapshot) {
+            const notifications = snapshot.val() ? Object.entries(snapshot.val())
+                .map(function(e) { return Object.assign({ id: e[0] }, e[1]); })
+                .filter(function(n) { return !n.target_uid || n.target_uid === 'all' || n.target_uid === currentUser.uid; })
+                .sort(function(a, b) { return b.created_at - a.created_at; }) : [];
+            
+            allNotifications = notifications;
+            updateBadge();
+            if (notifSheet.classList.contains('active') && notifListView.style.display !== 'none') renderNotifications();
+        });
+    }
+
+    function updateBadge() {
+        const unreadCount = allNotifications.filter(function(n) { return !n.is_read; }).length;
+        notifBadge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+        if (unreadCount > 0) notifBadge.classList.add('active'); else notifBadge.classList.remove('active');
+    }
+
+    function renderNotifications() {
+        notifListView.style.display = 'block';
+        notifDetailView.style.display = 'none';
+        isNotifInDetail = false; updateNotifLeftIcon();
+        if (allNotifications.length === 0) {
+            notifList.innerHTML = '<li style="padding:40px;text-align:center;color:var(--text-sub)">No notifications yet.</li>';
+            return;
+        }
+        notifList.innerHTML = allNotifications.map(function(n) {
+            const isUnread = !n.is_read;
+            return '<li class="notif-item ' + (isUnread ? 'unread' : '') + '" onclick="openNotifDetail(\'' + n.id + '\')">' +
+                '<div class="notif-title-list">' + escapeHtmlUser(n.title || 'Notification') + '</div>' +
+                '<div class="notif-time">' + timeAgoShort(n.created_at) + '</div></li>';
+        }).join('');
+    }
+
+    window.openNotifDetail = async (nid) => {
+        const notification = allNotifications.find(function(n) { return n.id === nid; });
+        if (!notification) return;
+        notifListView.style.display = 'none';
+        notifDetailView.style.display = 'block';
+        isNotifInDetail = true; updateNotifLeftIcon();
+
+        const descHtml = DOMPurify.sanitize(marked.parse(notification.decs || notification.description || ''));
+        notifDetailContent.innerHTML = 
+            '<div class="notif-detail-title">' + escapeHtmlUser(notification.title || 'Notification') + '</div>' +
+            '<div class="notif-detail-time">' + timeAgoShort(notification.created_at) + '</div>' +
+            '<div class="notif-detail-content markdown-body">' + descHtml + '</div>';
+        if (!notification.is_read && currentUser) await notificationsRef.child(nid).update({ is_read: true }).catch(console.warn);
+    };
+
+    window.closeNotifDetail = () => { notifDetailView.style.display = 'none'; notifListView.style.display = 'block'; isNotifInDetail = false; updateNotifLeftIcon(); };
+
+    function updateNotifLeftIcon() {
+        if (isNotifInDetail) { notifLeftBtn.innerHTML = SVG_BACK; notifLeftBtn.onclick = closeNotifDetail; } 
+        else { notifLeftBtn.innerHTML = isNotifExpanded ? SVG_COLLAPSE : SVG_EXPAND; notifLeftBtn.onclick = toggleNotifExpand; }
+    }
+
+    function toggleNotifExpand() {
+        isNotifExpanded = !isNotifExpanded;
+        if (isNotifExpanded) notifSheet.classList.add('expanded'); else notifSheet.classList.remove('expanded');
+        updateNotifLeftIcon();
+    }
+
+    notifBtn.addEventListener('click', function() {
+        if (!currentUser) { showAuthModal(); return; }
+        renderNotifications();
+        sheetOverlay.classList.add('active'); notifSheet.classList.add('active');
+    });
+
+    function closeSheetCommon() {
+        sheetOverlay.classList.remove('active'); notifSheet.classList.remove('active'); aiSheet.classList.remove('active');
+        setTimeout(function() {
+            isNotifExpanded = false; isAiExpanded = false;
+            notifSheet.classList.remove('expanded'); aiSheet.classList.remove('expanded'); closeNotifDetail();
+        }, 300);
+    }
+    closeSheet.addEventListener('click', closeSheetCommon); closeAiSheet.addEventListener('click', closeSheetCommon); sheetOverlay.addEventListener('click', closeSheetCommon);
+
+    function updateAiLeftIcon() { aiExpandBtn.innerHTML = isAiExpanded ? SVG_COLLAPSE : SVG_EXPAND; }
+    function toggleAiExpand() { isAiExpanded = !isAiExpanded; if (isAiExpanded) aiSheet.classList.add('expanded'); else aiSheet.classList.remove('expanded'); updateAiLeftIcon(); }
+    aiExpandBtn.onclick = toggleAiExpand;
+
+    aiBtn.addEventListener('click', function() {
+        if (!currentUser) { showAuthModal(); return; }
+        sheetOverlay.classList.add('active'); aiSheet.classList.add('active'); updateAiLeftIcon();
+    });
+
+    async function loadChatHistory() {
+        if (!currentUser) return;
+        try {
+            const snapshot = await chatsRef.orderByChild('timestamp').limitToLast(50).once('value');
+            const chats = snapshot.val() ? Object.entries(snapshot.val()).map(function(e) { return Object.assign({ id: e[0] }, e[1]); }).filter(function(chat) { return chat.userId === currentUser.uid; }).sort(function(a, b) { return a.timestamp - b.timestamp; }) : [];
+            while (chatList.children.length > 1) chatList.removeChild(chatList.lastChild);
+            chats.forEach(function(chat) { appendMessage(chat.role, chat.content, false); });
+            scrollToBottom();
+        } catch(e) { console.error(e); }
+    }
+
+    function parseFileLinks(text) {
+        if (!text) return '';
+        const fileRegex = /\[FILE:([^|\]]+)\|([^|\]]+)\|([^\]]+)\]/g;
+        let processed = text.replace(fileRegex, function(match, id, title, ext) {
+            const cleanId = id.trim();
+            const cleanTitle = title.trim();
+            const cleanExt = ext.trim();
+            const safeTitle = String(cleanTitle).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return '\n\n<div class="ai-file-card" data-file-id="' + cleanId + '" data-file-ext="' + cleanExt + '"><div class="ai-file-icon">' + getExtIcon(cleanExt) + '</div><div class="ai-file-info"><div class="ai-file-title">' + safeTitle + '</div><div class="ai-file-meta"><span class="ai-file-ext">' + cleanExt + '</span><span class="ai-file-cta">Click to open →</span></div></div></div>\n\n';
+        });
+        processed = processed.replace(/\n{3,}/g, '\n\n');
+        return processed;
+    }
+
+    function getExtIcon(ext) {
+        const e = String(ext || '').toLowerCase();
+        if (e.indexOf('apk') !== -1) return '📱';
+        if (e.indexOf('zip') !== -1 || e.indexOf('rar') !== -1) return '📦';
+        if (e.indexOf('pdf') !== -1) return '📄';
+        if (e.indexOf('mp4') !== -1 || e.indexOf('mkv') !== -1) return '🎬';
+        if (e.indexOf('mp3') !== -1) return '🎵';
+        if (e.indexOf('jpg') !== -1 || e.indexOf('png') !== -1) return '🖼️';
+        if (e.indexOf('ai') !== -1) return '🎨';
+        if (e.indexOf('exe') !== -1) return '💻';
+        if (e.indexOf('doc') !== -1) return '📝';
+        return '📁';
+    }
+
+    function appendMessage(role, text, saveToHistory) {
+        if (saveToHistory === undefined) saveToHistory = true;
+        const div = document.createElement('div'); 
+        div.className = 'chat-bubble ' + role;
+        
+        if (role === 'ai') {
+            const processedText = parseFileLinks(text);
+            const parsed = DOMPurify.sanitize(marked.parse(processedText), {
+                ADD_ATTR: ['data-file-id', 'data-file-ext', 'target']
+            });
+            const avatarUrl = getAiAvatarUrl(document.documentElement.getAttribute('data-theme'));
+            div.innerHTML = '<img src="' + avatarUrl + '" class="ai-avatar"><div class="ai-content">' + parsed + '</div>';
+            
+            setTimeout(function() {
+                div.querySelectorAll('.ai-file-card').forEach(function(card) {
+                    card.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const fileId = card.dataset.fileId;
+                        if (fileId) {
+                            closeSheetCommon();
+                            setTimeout(function() { navigateTo('/file/' + fileId); }, 350);
+                        }
+                    });
+                });
+            }, 50);
+        } else {
+            div.innerText = text;
+        }
+        chatList.appendChild(div); 
+        scrollToBottom();
+        if (role === 'ai' && saveToHistory) hljs.highlightAll();
+    }
+
+    function showTypingIndicator() {
+        const div = document.createElement('div'); div.className = 'typing-container'; div.id = 'typingIndicator';
+        const avatarUrl = getAiAvatarUrl(document.documentElement.getAttribute('data-theme'));
+        div.innerHTML = '<img src="' + avatarUrl + '" class="ai-loading-img"><div class="typing-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
+        chatList.appendChild(div); scrollToBottom();
+    }
+    function removeTypingIndicator() { const el = document.getElementById('typingIndicator'); if(el) el.remove(); }
+    function scrollToBottom() { chatList.scrollTop = chatList.scrollHeight; }
+
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+    async function sendMessage() {
+        const text = chatInput.value.trim(); if(!text) return;
+        chatInput.value = ''; chatInput.style.height = 'auto';
+        appendMessage('user', text); showTypingIndicator();
+        
+        try {
+            if (currentUser) {
+                await chatsRef.push({ userId: currentUser.uid, role: 'user', content: text, timestamp: Date.now() });
+            }
+
+            const settingsSnap = await settingsRef.once('value');
+            const settingsVal = settingsSnap.val() || {};
+            const aiSettings = settingsVal.ai || {};
+            const apiKey = aiSettings.apiKey || settingsVal.aiApiKey || '';
+            const apiUrl = aiSettings.apiURL || "https://api.openai.com/v1/chat/completions";
+            const apiModel = aiSettings.model || "gpt-4o-mini";
+
+            if (!apiKey) {
+                removeTypingIndicator();
+                const noKeyMsg = "⚠️ **AI সিস্টেম অফলাইন:** অ্যাডমিন প্যানেল থেকে AI API Key সেট করা হয়নি।";
+                appendMessage('ai', noKeyMsg);
+                if (currentUser) await chatsRef.push({ userId: currentUser.uid, role: 'ai', content: noKeyMsg, timestamp: Date.now() });
+                return;
+            }
+
+            const filesSnap = await filesRef.once('value');
+            const filesData = filesSnap.val() || {};
+            
+            const allFilesList = Object.entries(filesData)
+                .map(function(e) {
+                    const id = e[0];
+                    const item = e[1];
+                    const ext = item.file_extension || '';
+                    let category = 'file';
+                    if (ext.toLowerCase().replace('.', '') === 'apk') category = 'apk';
+                    return {
+                        id: id,
+                        title: item.title,
+                        extension: ext,
+                        category: category,
+                        status: item.status
+                    };
+                })
+                .filter(function(f) { return f.status === 'approved'; });
+
+            const aiPromptFiles = getAIPromptFiles();
+            const aiPromptsList = aiPromptFiles.map(function(p) {
+                return { id: p.id, title: p.title, extension: '.ai', category: 'ai-prompt', status: 'approved' };
+            });
+
+            const apkFiles = allFilesList.filter(function(f) { return f.category === 'apk'; });
+            const otherFiles = allFilesList.filter(function(f) { return f.category === 'file'; });
+
+            const adminInfo = settingsVal.admin || {};
+            const adminName = adminInfo.name || 'FILE HUB এডমিন';
+            const adminSocial = adminInfo.social || {};
+            const socialList = [];
+            if (adminSocial.telegram) socialList.push('Telegram: ' + adminSocial.telegram);
+            if (adminSocial.facebook) socialList.push('Facebook: ' + adminSocial.facebook);
+            if (adminSocial.youtube) socialList.push('YouTube: ' + adminSocial.youtube);
+            if (adminSocial.whatsapp) socialList.push('WhatsApp: ' + adminSocial.whatsapp);
+            if (adminSocial.instagram) socialList.push('Instagram: ' + adminSocial.instagram);
+            if (adminSocial.twitter) socialList.push('Twitter: ' + adminSocial.twitter);
+            if (adminSocial.email) socialList.push('Email: ' + adminSocial.email);
+            const socialText = socialList.length > 0 ? socialList.join('\n') : 'Telegram: https://t.me/ewrjahid_01';
+
+            const websiteName = (settingsVal.app && settingsVal.app.appName) || 'FileHub';
+            const siteDescription = 'FileHub is a secure file sharing platform offering premium APK mods, files, and AI prompts.';
+
+            const systemPrompt = "You are FileHub AI, a friendly, helpful, and intelligent assistant for the " + websiteName + " website. " +
+                "You speak in a warm, friendly, casual tone. Always add emojis to make conversation lively. Speak Bengali (বাংলা) unless user speaks English.\n\n" +
+
+                "=== ABOUT YOU ===\n" +
+                "You are the official AI assistant of " + websiteName + ".\n" +
+                "If asked who created you, say: 'আমাকে তৈরি করেছে " + adminName + " — যিনি " + websiteName + " এর মূল এডমিন। 🙌'\n" +
+                "If asked about the admin or admin panel or who runs this site, say: 'আমাদের এডমিন হলেন " + adminName + "। উনার সাথে যোগাযোগ করতে পারেন নিচের সোশ্যাল মিডিয়াতে:\n" + socialText + "'\n" +
+
+                "=== SITE INFO ===\n" +
+                "Website Name: " + websiteName + "\n" +
+                "Description: " + siteDescription + "\n" +
+                "Total APK Files: " + apkFiles.length + "\n" +
+                "Total Other Files: " + otherFiles.length + "\n" +
+                "Total AI Prompts: " + aiPromptsList.length + "\n\n" +
+
+                "=== APK FILES (" + apkFiles.length + ") ===\n" +
+                JSON.stringify(apkFiles, null, 2) + "\n\n" +
+
+                "=== OTHER FILES (" + otherFiles.length + ") — Includes .zip, .rar, .html, .php, .pdf, etc. ===\n" +
+                JSON.stringify(otherFiles, null, 2) + "\n\n" +
+
+                "=== AI IMAGE PROMPTS (" + aiPromptsList.length + ") ===\n" +
+                JSON.stringify(aiPromptsList, null, 2) + "\n\n" +
+
+                "=== CURRENT USER ===\n" +
+                "Name: " + (currentUserData ? (currentUserData.fullname || 'Guest') : 'Guest') + "\n" +
+                "Username: " + (currentUserData ? (currentUserData.username || 'N/A') : 'N/A') + "\n" +
+                "Email: " + (currentUser ? currentUser.email : 'Not logged in') + "\n\n" +
+
+                "=== RESPONSE RULES ===\n" +
+                "1. Be FRIENDLY, casual, warm, and add emojis. Use Bengali language.\n" +
+                "2. When mentioning files, ALWAYS use this EXACT format (one per line, no bullet points):\n" +
+                "   [FILE:ID|Title|Extension]\n" +
+                "   Example: [FILE:earnix-job|🎬 TikTok Mod APK|.apk]\n" +
+                "3. NEVER use markdown links like [text](url) for files. Always use [FILE:...] format.\n" +
+                "4. NEVER use bullet points for files. Just newlines.\n" +
+                "5. When user asks for APK apps, list APK files only.\n" +
+                "6. When user asks for other files (zip, rar, html, php, pdf), list other files.\n" +
+                "7. When user asks for AI prompts, list AI prompts.\n" +
+                "8. If user asks about you or admin, respond warmly with the admin info above.\n" +
+                "9. If user asks general questions, answer helpfully and nicely.\n" +
+                "10. Always end with a friendly follow-up question like 'আরো কিছু জানতে চান? 😊'\n" + (settingsVal.ai && settingsVal.ai.instructions ? '\n=== ADMIN INSTRUCTIONS ===\n' + settingsVal.ai.instructions : '');
+
+            const apiResponse = await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiKey },
+                body: JSON.stringify({
+                    model: apiModel,
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: text }
+                    ],
+                    temperature: 0.8
+                })
+            });
+
+            const responseData = await apiResponse.json();
+            removeTypingIndicator();
+
+            if (apiResponse.ok && responseData.choices && responseData.choices.length > 0) {
+                const aiReply = responseData.choices[0].message.content;
+                appendMessage('ai', aiReply);
+                if (currentUser) {
+                    await chatsRef.push({ userId: currentUser.uid, role: 'ai', content: aiReply, timestamp: Date.now() });
+                }
+            } else {
+                const errorMsg = (responseData.error && responseData.error.message) || responseData.message || ('HTTP ' + apiResponse.status + ' Error');
+                appendMessage('ai', '⚠️ **API Error:** ' + errorMsg);
+            }
+        } catch (e) { 
+            console.error(e);
+            removeTypingIndicator(); 
+            appendMessage('ai', '⚠️ **Error:** ' + (e.message || 'নেটওয়ার্ক সমস্যা।')); 
+        }
+    }
+
+    searchTrigger.addEventListener('click', function() { searchOverlay.classList.add('active'); searchInput.focus(); });
+    searchBack.addEventListener('click', function() { searchOverlay.classList.remove('active'); searchInput.value = ''; searchClear.classList.remove('visible'); filterFiles(''); });
+    searchInput.addEventListener('input', function(e) { const term = e.target.value; searchClear.classList.toggle('visible', term.length > 0); filterFiles(term); });
+    searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { searchInput.blur(); searchOverlay.classList.remove('active'); } });
+    searchClear.addEventListener('click', function() { searchInput.value = ''; searchInput.focus(); searchClear.classList.remove('visible'); filterFiles(''); });
+
+    function filterFiles(term) {
+        term = term.toLowerCase(); const cards = document.querySelectorAll('.file-card');
+        if(cards.length === 0) return;
+        cards.forEach(function(card) {
+            const title = card.querySelector('.card-title') ? card.querySelector('.card-title').innerText.toLowerCase() : '';
+            card.style.display = title.indexOf(term) !== -1 ? 'flex' : 'none';
+        });
+    }
+
+    window.openLightbox = function(src) { if (!src) return; lightboxImg.src = src; lightbox.style.display = 'flex'; requestAnimationFrame(function() { lightbox.classList.add('active'); }); };
+    window.closeLightbox = function() { lightbox.classList.remove('active'); setTimeout(function() { lightbox.style.display = 'none'; lightboxImg.src = ''; }, 300); };
+    lightboxClose.addEventListener('click', window.closeLightbox);
+    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) window.closeLightbox(); });
+
+    let currentRoute = null;
+
+    window.navigateTo = function(url) {
+        currentRoute = url;
+        try {
+            window.location.hash = '#' + url;
+        } catch(e) { console.warn('hash failed', e); }
+        handleRoute();
+    };
+
+    function renderError(title, msg) {
+        app.innerHTML = '<div class="error-container">' +
+            '<svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>' +
+            '<div class="error-title">' + title + '</div>' +
+            '<div style="color:var(--text-sub)">' + msg + '</div>' +
+            '<button class="error-btn" onclick="navigateTo(\'/\')">Go Home</button></div>';
+    }
+
+
+    function renderCollectionPage(kind){
+        const isPrompt=kind==='prompts'; document.title=(isPrompt?'AI Image Prompts':'Files & Downloads')+' — FileHub';
+        const items=isPrompt?getAIPromptFiles():allFiles.filter(function(f){return f.status==='approved';});
+        const title=isPrompt?'AI Image Prompt Library':'Files & Downloads'; const sub=isPrompt?'Ready-to-use prompts for image generation, organized for quick copy and use.':'Browse APKs, documents and downloadable resources in one clean library.';
+        const empty=isPrompt?'No image prompts published yet.':'No approved files published yet.';
+        app.innerHTML='<div class="page-hero"><h1><i class="fas '+(isPrompt?'fa-wand-magic-sparkles':'fa-folder-open')+'"></i> '+title+'</h1><p>'+sub+'</p></div><div class="section-header" style="margin-top:8px"><h2>'+title+'</h2><span class="section-count">'+items.length+'</span></div>'+(items.length?'<div class="file-grid">'+items.map(buildFileCardHTML).join('')+'</div>':'<div class="error-container"><div class="error-title">'+empty+'</div><div style="color:var(--text-sub)">Check back soon for new content.</div></div>');
+    }
+
+    async function handleRoute() {
+        let path = '/';
+        if (window.location.hash && window.location.hash.startsWith('#/')) {
+            path = window.location.hash.substring(1);
+        } else if (window.location.pathname && window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+            path = window.location.pathname;
+        }
+        
+        if (currentRoute) path = currentRoute;
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        if (!path || path === '') path = '/';
+        document.querySelectorAll('.quick-nav button').forEach(function(b){b.classList.toggle('active',b.dataset.route===path);});
+        if (path.indexOf('/index.html/') === 0) path = path.substring('/index.html'.length);
+
+        clearInterval(bannerInterval); clearInterval(detailInterval);
+        await loadData();
+        
+        if (path === '/' || path === '/index.html' || path === '') {
+            resetOGTags(); renderHome();
+        } else if (path === '/files') { renderCollectionPage('files');
+        } else if (path === '/prompts') { renderCollectionPage('prompts');
+        } else if (path.indexOf('/file/') === 0) {
+            const slug = decodeURIComponent(path.split('/file/')[1]);
+            if (slug) renderDetail('file', slug);
+            else renderError('Not Found', 'File ID missing.');
+        } else if (path.indexOf('/banner/') === 0) {
+            const id = path.split('/banner/')[1];
+            if (id) renderDetail('banner', id);
+            else renderError('Not Found', 'Banner ID missing.');
+        } else if (path === '/upload') {
+            if (currentUser) renderUpload();
+            else { showAuthModal(); renderHome(); }
+        } else if (path === '/profile') {
+            if (currentUser) renderProfile();
+            else { showAuthModal(); renderHome(); }
+        } else {
+            console.warn('Unknown route:', path);
+            renderHome();
+        }
+    }
+
+    window.addEventListener('popstate', function() { currentRoute = null; handleRoute(); });
+    window.addEventListener('hashchange', function() {
+        const hashPath = window.location.hash.substring(1);
+        if (hashPath) { currentRoute = hashPath; handleRoute(); }
+    });
+
+    function updateOGTags(item) {
+        const title = item.title || 'FileHub';
+        const description = item.description 
+            ? item.description.replace(/[#*`_>\[\]()!]/g, '').substring(0, 160)
+            : 'Download premium files securely from FileHub.';
+        const image = item.thumbnail_url || 'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';
+        const url = window.location.href;
+        document.title = title + ' - FileHub';
+
+        function setMeta(property, content, isName) {
+            const attr = isName ? 'name' : 'property';
+            let meta = document.querySelector('meta[' + attr + '="' + property + '"]');
+            if (!meta) {
+                meta = document.createElement('meta');
+                meta.setAttribute(attr, property);
+                document.head.appendChild(meta);
+            }
+            meta.setAttribute('content', content);
+        }
+
+        setMeta('title', title + ' - FileHub', true);
+        setMeta('description', description, true);
+        setMeta('og:title', title);
+        setMeta('og:description', description);
+        setMeta('og:image', image);
+        setMeta('og:image:width', '1200');
+        setMeta('og:image:height', '630');
+        setMeta('og:url', url);
+        setMeta('og:type', 'article');
+        setMeta('og:site_name', 'FileHub');
+        setMeta('twitter:card', 'summary_large_image', true);
+        setMeta('twitter:title', title, true);
+        setMeta('twitter:description', description, true);
+        setMeta('twitter:image', image, true);
+        setMeta('og:image:secure_url', image);
+    }
+
+    function resetOGTags() {
+        document.title = 'FileHub - Secure File Sharing';
+        const defaults = {
+            'og:title': 'FileHub Premium - Secure Storage & Sharing',
+            'og:description': 'Access and manage your premium files with FileHub.',
+            'og:image': 'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png',
+            'og:url': 'https://filehub.vercel.app/',
+            'og:type': 'website'
+        };
+        Object.keys(defaults).forEach(function(key) {
+            let meta = document.querySelector('meta[property="' + key + '"]');
+            if (meta) meta.setAttribute('content', defaults[key]);
+        });
+    }
+
+    function buildFileCardHTML(f) {
+        const isAI = f.isAIPrompt;
+        const isAPK = !isAI && (f.file_extension || '').toLowerCase().replace('.', '') === 'apk';
+        const cardThumb = f.thumbnail_url || 'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';
+        
+        let badgeHTML = '';
+        if (isAI) badgeHTML = '<span class="prompt-file-badge"><i class="fas fa-magic"></i> AI Prompt</span>';
+        else if (isAPK) badgeHTML = '<span class="apk-file-badge"><i class="fas fa-mobile-alt"></i> APK App</span>';
+        
+        const ext = isAI ? 'ai' : (f.file_extension || 'file');
+        let footerIcon = '';
+        if (isAI) footerIcon = '<i class="fas fa-copy"></i> Copy';
+        else if (isAPK) footerIcon = '<i class="fas fa-download"></i> ' + formatCount(f.total_downloads || 0);
+        else footerIcon = '<i class="fas fa-download"></i> ' + formatCount(f.total_downloads || 0);
+        
+        return '<div class="file-card">' +
+            badgeHTML +
+            '<img src="' + cardThumb + '" class="card-thumb" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'" onclick="openLightbox(this.src); event.stopPropagation();">' +
+            '<div class="card-body" onclick="navigateTo(\'/file/' + f.id + '\')">' +
+                '<div class="card-title">' + escapeHtmlUser(f.title || 'Untitled') + '</div>' +
+                '<div class="card-footer">' +
+                    '<span class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' + truncateExt(ext) + '</span>' +
+                    '<span class="meta-pill">' + footerIcon + '</span>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function renderHome() {
+        document.title = "Dashboard - FileHub";
+        app.innerHTML = getHomeSkeleton();
+
+        try {
+            const approvedFiles = allFiles.filter(function(f) { return f.status === 'approved'; });
+            const aiPromptFiles = getAIPromptFiles();
+            
+            // Split files by category
+            const apkFiles = approvedFiles.filter(function(f) {
+                return (f.file_extension || '').toLowerCase().replace('.', '') === 'apk';
+            });
+            const otherFiles = approvedFiles.filter(function(f) {
+                return (f.file_extension || '').toLowerCase().replace('.', '') !== 'apk';
+            });
+
+            // Banner HTML
+            let bannerHTML = '';
+            if (allBanners.length > 0) {
+                const dots = allBanners.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
+                bannerHTML = 
+                    '<div class="carousel-wrap" id="homeCarousel">' +
+                        '<div class="carousel-inner" id="homeInner">' +
+                            allBanners.map(function(b) {
+                                return '<div class="slide" onclick="navigateTo(\'/banner/' + b.id + '\')">' +
+                                    '<img src="' + (b.thumbnail_url || '') + '" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'">' +
+                                    '<div class="center-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></div>' +
+                                    '<div class="slide-overlay"><span class="banner-pill"><i class="fas fa-image"></i> Slider</span>' +
+                                    '<div class="slide-title" style="flex:1; text-align:center; padding:0 5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + escapeHtmlUser(b.title || 'Banner') + '</div></div></div>';
+                            }).join('') +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="carousel-dots" id="homeDots">' + dots + '</div>';
+            }
+
+            // Build Category Sections
+            let sectionsHTML = '';
+
+            // Section 1: APK Apps
+            if (apkFiles.length > 0) {
+                sectionsHTML += 
+                    '<div class="section-header">' +
+                        '<svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H7V5h10v14z"/></svg>' +
+                        '<h2>📱 APK Apps</h2>' +
+                        '<span class="section-count">' + apkFiles.length + '</span>' +
+                    '</div>' +
+                    '<div class="file-grid">' + apkFiles.map(buildFileCardHTML).join('') + '</div>';
+            }
+
+            // Section 2: Other Files (zip, rar, html, php, pdf, etc.)
+            if (otherFiles.length > 0) {
+                sectionsHTML += 
+                    '<div class="section-header">' +
+                        '<svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/></svg>' +
+                        '<h2>📦 Files & Documents</h2>' +
+                        '<span class="section-count">' + otherFiles.length + '</span>' +
+                    '</div>' +
+                    '<div class="file-grid">' + otherFiles.map(buildFileCardHTML).join('') + '</div>';
+            }
+
+            // Section 3: AI Prompts
+            if (aiPromptFiles.length > 0) {
+                sectionsHTML += 
+                    '<div class="section-header">' +
+                        '<svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/></svg>' +
+                        '<h2>🎨 AI Image Prompts</h2>' +
+                        '<span class="section-count">' + aiPromptFiles.length + '</span>' +
+                    '</div>' +
+                    '<div class="file-grid">' + aiPromptFiles.map(buildFileCardHTML).join('') + '</div>';
+            }
+
+            // Empty state
+            if (apkFiles.length === 0 && otherFiles.length === 0 && aiPromptFiles.length === 0) {
+                sectionsHTML = '<p style="text-align:center;color:var(--text-sub);padding:40px;grid-column:1/-1;">No items found.</p>';
+            }
+
+            app.innerHTML = bannerHTML + sectionsHTML;
+
+            if(allBanners.length > 1) initCarousel('homeInner', 'homeDots', allBanners.length, true);
+        } catch (e) {
+            console.error(e);
+            app.innerHTML = '<div style="text-align:center;padding:50px;color:var(--text-sub)">Failed to load content. Please refresh.</div>';
+        }
+    }
+
+    async function renderDetail(type, id) {
+        app.innerHTML = getDetailSkeleton();
+
+        try {
+            if (type === 'file' && isAIPromptId(id)) {
+                const promptIndex = parseInt(id.replace(AI_PROMPT_PREFIX, ''));
+                const promptData = getAIPromptByIndex(promptIndex);
+                if (!promptData) { renderError('Not Found', 'AI prompt does not exist.'); return; }
+
+                const imgSettings = appSettings.aiImage || {};
+                const geminiUrl = imgSettings.geminiUrl || 'https://gemini.google.com/app';
+
+                const item = {
+                    id: id,
+                    title: promptData.title || 'AI Prompt',
+                    description: promptData.prompt || '',
+                    thumbnail_url: promptData.sample_image || '',
+                    file_extension: '.ai',
+                    required_ads: parseInt(promptData.required_ads) || 0,
+                    created_at: promptData.created_at || Date.now(),
+                    isAIPrompt: true,
+                    prompt_text: promptData.prompt || '',
+                    geminiUrl: geminiUrl,
+                    detail_photos: promptData.detail_photos || []
+                };
+
+                document.title = item.title + ' - FileHub';
+                updateOGTags(item);
+
+                let watched = 0;
+                if (currentUser) {
+                    const statusRef = database.ref('user_file_status/' + currentUser.uid + '_' + item.id);
+                    const statusSnap = await statusRef.once('value');
+                    watched = statusSnap.val() || 0;
+                } else {
+                    watched = parseInt(localStorage.getItem('ad_' + item.id) || '0');
+                }
+
+                let carouselHTML = '';
+                const photos = (item.detail_photos && item.detail_photos.length > 0) 
+                    ? item.detail_photos 
+                    : (item.thumbnail_url ? [item.thumbnail_url] : []);
+                
+                if (photos.length > 0) {
+                    if (photos.length === 1) {
+                        carouselHTML = '<div class="carousel-wrap"><div class="slide"><img src="' + escapeHtmlUser(photos[0]) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div></div>';
+                    } else {
+                        const dots = photos.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
+                        carouselHTML = 
+                            '<div class="carousel-wrap" id="detailWrap">' +
+                                '<div class="carousel-inner" id="detailInner">' +
+                                    photos.map(function(u) { return '<div class="slide"><img src="' + escapeHtmlUser(u) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div>'; }).join('') +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="carousel-dots" id="detailDots">' + dots + '</div>';
+                    }
+                }
+
+                app.innerHTML = 
+                    '<div class="detail-wrapper">' +
+                        carouselHTML +
+                        '<div class="detail-header-block">' +
+                            '<h1 class="detail-title">' + escapeHtmlUser(item.title) + '</h1>' +
+                            '<div class="detail-meta-grid">' +
+                                '<span class="meta-pill meta-left"><i class="fas fa-magic"></i> AI Prompt</span>' +
+                                '<span class="meta-pill meta-center"><i class="fas fa-copy"></i> Copyable</span>' +
+                                '<span class="meta-pill meta-right"><i class="far fa-clock"></i> ' + timeAgoShort(item.created_at) + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div id="unlockSection" class="unlock-inline"></div>' +
+                    '</div>';
+
+                if (photos.length > 1) initCarousel('detailInner', 'detailDots', photos.length, false);
+
+                renderUnlockLogic('file', item, watched);
+                return;
+            }
+
+            const ref = type === 'file' ? filesRef : bannersRef;
+            const snapshot = await ref.child(id).once('value');
+            if (!snapshot.exists()) { renderError('Content Not Found', 'The file does not exist.'); return; }
+
+            const item = Object.assign({ id: id }, snapshot.val());
+            document.title = (item.title || 'File') + ' - FileHub';
+            updateOGTags(item);
+
+            let watched = 0;
+            if (currentUser) {
+                const statusRef = database.ref('user_file_status/' + currentUser.uid + '_' + item.id);
+                const statusSnap = await statusRef.once('value');
+                watched = statusSnap.val() || 0;
+            } else {
+                watched = parseInt(localStorage.getItem('ad_' + item.id) || '0');
+            }
+
+            let carouselHTML = '';
+            if (item.detail_photos && item.detail_photos.length > 0) {
+                const dots = item.detail_photos.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
+                carouselHTML = 
+                    '<div class="carousel-wrap" id="detailWrap">' +
+                        '<div class="carousel-inner" id="detailInner">' +
+                            item.detail_photos.map(function(u) { return '<div class="slide"><img src="' + escapeHtmlUser(u) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div>'; }).join('') +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="carousel-dots" id="detailDots">' + dots + '</div>';
+            } else if (item.thumbnail_url) {
+                carouselHTML = '<div class="carousel-wrap"><div class="slide"><img src="' + escapeHtmlUser(item.thumbnail_url) + '" onclick="openLightbox(this.src)" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'"></div></div>';
+            }
+
+            let descHTML = '';
+            if (type === 'file') {
+                if (item.description && item.description.trim() !== '') {
+                    const desc = DOMPurify.sanitize(marked.parse(item.description));
+                    descHTML = '<div class="detail-desc">' + desc + '</div>';
+                } else {
+                    descHTML = '<div class="detail-desc"><p style="color:var(--text-sub);text-align:center;padding:10px;">— No description available —</p></div>';
+                }
+            }
+
+            app.innerHTML = 
+                '<div class="detail-wrapper">' +
+                    carouselHTML +
+                    '<div class="detail-header-block">' +
+                        '<h1 class="detail-title">' + escapeHtmlUser(item.title || 'Untitled') + '</h1>' +
+                        '<div class="detail-meta-grid">' +
+                            '<span class="meta-pill meta-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' + (item.file_extension || (type === 'banner' ? 'slider' : 'file')) + '</span>' +
+                            '<span class="meta-pill meta-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>' + formatCount(item.total_downloads || 0) + '</span>' +
+                            '<span class="meta-pill meta-right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>' + timeAgoShort(item.created_at) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    descHTML +
+                    '<div id="unlockSection" class="unlock-inline"></div>' +
+                '</div>';
+            
+            hljs.highlightAll();
+            if (item.detail_photos && item.detail_photos.length > 1) initCarousel('detailInner', 'detailDots', item.detail_photos.length, false);
+
+            renderUnlockLogic(type, item, watched);
+        } catch(e) { console.error(e); renderError('Connection Error', 'Failed to load content.'); }
+    }
+
+    function renderUnlockLogic(type, item, watched) {
+        const zone = document.getElementById('unlockSection');
+        if (!zone) return;
+        const req = item.required_ads || 0;
+        const isAI = item.isAIPrompt;
+        const isBanner = type === 'banner';
+
+        let mainBtnHtml = '';
+
+        if (watched >= req && req > 0) {
+            if (isAI) {
+                mainBtnHtml = 
+                    '<button class="prompt-copy-main-btn" id="copyPromptMainBtn" onclick="copyMainPrompt(this)"><i class="fas fa-copy"></i> Copy Prompt</button>' +
+                    '<a href="' + escapeHtmlUser(item.geminiUrl || 'https://gemini.google.com/app') + '" target="_blank" rel="noopener" class="prompt-gemini-main-btn"><i class="fas fa-gem"></i> Open Gemini AI</a>';
+            } else if (isBanner) {
+                mainBtnHtml = item.download_url 
+                    ? '<a href="' + escapeHtmlUser(item.download_url) + '" target="_blank" rel="noopener" class="unlock-btn" style="text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Visit Link</a>'
+                    : '<div style="padding:16px;background:var(--bg);border-radius:12px;text-align:center;color:var(--text-sub);">No link provided</div>';
+            } else {
+                mainBtnHtml = '<button class="unlock-btn" id="dlBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Now</button>';
+            }
+        } else if (req > 0) {
+            const btnText = isAI ? 'Unlock Prompt (Step ' + (watched+1) + '/' + req + ')' : 'Unlock Step ' + (watched+1) + '/' + req;
+            const icon = watched > 0 
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>' 
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            mainBtnHtml = '<button class="unlock-btn" onclick="triggerAd(\'' + item.id + '\', ' + watched + ', ' + req + ', \'' + type + '\')">' + icon + ' ' + btnText + '</button>';
+        } else {
+            if (isAI) {
+                mainBtnHtml = 
+                    '<button class="prompt-copy-main-btn" id="copyPromptMainBtn" onclick="copyMainPrompt(this)"><i class="fas fa-copy"></i> Copy Prompt</button>' +
+                    '<a href="' + escapeHtmlUser(item.geminiUrl || 'https://gemini.google.com/app') + '" target="_blank" rel="noopener" class="prompt-gemini-main-btn"><i class="fas fa-gem"></i> Open Gemini AI</a>';
+            } else if (isBanner) {
+                mainBtnHtml = item.download_url 
+                    ? '<a href="' + escapeHtmlUser(item.download_url) + '" target="_blank" rel="noopener" class="unlock-btn" style="text-decoration:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Visit Link</a>'
+                    : '<div style="padding:16px;background:var(--bg);border-radius:12px;text-align:center;color:var(--text-sub);">No link provided</div>';
+            } else {
+                mainBtnHtml = '<button class="unlock-btn" id="dlBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download Now</button>';
+            }
+        }
+
+        let promptTextBoxHTML = '';
+        if (isAI && watched >= req) {
+            promptTextBoxHTML = 
+                '<div class="prompt-detail-wrapper">' +
+                    '<div class="prompt-detail-header">' +
+                        '<div class="prompt-detail-icon"><i class="fas fa-quote-left"></i></div>' +
+                        '<div><div class="prompt-detail-title">Prompt Text</div>' +
+                        '<div class="prompt-detail-subtitle">নিচের প্রমোট কপি করে Gemini AI তে পেস্ট করুন</div></div>' +
+                    '</div>' +
+                    '<div class="prompt-text-display" id="promptTextBox">' + escapeHtmlUser(item.prompt_text) + '</div>' +
+                '</div>';
+        }
+
+        const shareUrl = window.location.origin + '/file/' + item.id;
+        
+        if (isAI) {
+            zone.innerHTML = promptTextBoxHTML +
+                '<div style="display:flex; flex-direction:column; gap:10px;">' + mainBtnHtml + '</div>' +
+                '<div id="dlStatus" style="text-align:center; margin-top:10px; font-size:0.85rem; color:var(--text-sub)"></div>' +
+                '<div style="display:flex; justify-content:center; margin-top:10px;">' +
+                    '<button class="copy-btn" style="padding:10px 20px;" onclick="copyPageLink(this, \'' + shareUrl + '\')" title="Copy Share Link">' + SVG_LINK + '</button>' +
+                '</div>';
+        } else {
+            zone.innerHTML = 
+                '<div class="unlock-actions">' +
+                    mainBtnHtml +
+                    (isBanner ? '' : '<button class="copy-btn" onclick="copyPageLink(this, \'' + shareUrl + '\')" title="Copy Link">' + SVG_LINK + '</button>') +
+                '</div>' +
+                '<div id="dlStatus" style="text-align:center; margin-top:10px; font-size:0.85rem; color:var(--text-sub)"></div>';
+        }
+
+        const dlBtn = document.getElementById('dlBtn');
+        if(dlBtn) {
+            dlBtn.onclick = async function() {
+                if (!item.download_url) { 
+                    document.getElementById('dlStatus').innerText = 'Download URL not available.';
+                    return; 
+                }
+                this.innerText = "Redirecting..."; this.disabled = true;
+                const ref = type === 'file' ? filesRef : bannersRef;
+                await ref.child(item.id).child('total_downloads').transaction(function(current) { return (current || 0) + 1; });
+                window.location.href = item.download_url;
+            };
+        }
+    }
+
+    window.copyMainPrompt = function(btnEl) {
+        const promptBox = document.getElementById('promptTextBox');
+        if (!promptBox) return;
+        
+        const promptText = promptBox.textContent;
+        const originalHTML = btnEl.innerHTML;
+        
+        const copyToClipboard = function() {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(promptText);
+            } else {
+                return new Promise(function(resolve, reject) {
+                    const temp = document.createElement('textarea');
+                    temp.value = promptText;
+                    temp.style.position = 'fixed';
+                    temp.style.opacity = '0';
+                    document.body.appendChild(temp);
+                    temp.select();
+                    try { document.execCommand('copy'); resolve(); }
+                    catch (e) { reject(e); }
+                    document.body.removeChild(temp);
+                });
+            }
+        };
+        
+        copyToClipboard().then(function() {
+            btnEl.innerHTML = '<i class="fas fa-check"></i> Copied to Clipboard!';
+            btnEl.classList.add('copied');
+            setTimeout(function() {
+                btnEl.innerHTML = originalHTML;
+                btnEl.classList.remove('copied');
+            }, 2000);
+            showCopyToast('✅ Prompt copied! Gemini AI তে পেস্ট করুন');
+        }).catch(function() {
+            alert('❌ Copy failed. Please copy manually.');
+        });
+    };
+
+    function showCopyToast(message) {
+        const existing = document.getElementById('copyToast');
+        if (existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.id = 'copyToast';
+        toast.className = 'copy-toast';
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+        document.body.appendChild(toast);
+        
+        requestAnimationFrame(function() { toast.classList.add('show'); });
+        
+        setTimeout(function() {
+            toast.classList.remove('show');
+            setTimeout(function() { toast.remove(); }, 300);
+        }, 2500);
+    }
+
+    window.copyPageLink = function(btn, link) {
+        navigator.clipboard.writeText(link).then(function() {
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = SVG_CHECK; btn.style.borderColor = '#10b981'; btn.style.color = '#10b981';
+            setTimeout(function() { btn.innerHTML = originalIcon; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+        }).catch(function() { document.getElementById('dlStatus').innerText = 'Failed to copy link.'; });
+    };
+
+    window.triggerAd = async function(fileId, currentWatched, reqAds, type) {
+        adUnlockCompleted = false; adSecondsElapsed = 0; adWindowOpened = false;
+        pendingAdFileId = fileId; pendingAdType = type;
+        pendingAdCurrentWatched = currentWatched; pendingAdReq = reqAds;
+
+        const activeNetwork = (appSettings.ads && appSettings.ads.activeNetwork) || 'adsterra';
+        const adsterraLink = (appSettings.ads && appSettings.ads.adsterraDirectLink) || '';
+
+        let adLink = '';
+        if (activeNetwork === 'adsterra' || !activeNetwork || activeNetwork === 'both') {
+            adLink = adsterraLink;
+        }
+
+        if (!adLink) {
+            alert('⚠️ অ্যাডমিন প্যানেল থেকে Adsterra Direct Link সেট করা হয়নি।');
+            return;
+        }
+
+        const isAI = isAIPromptId(fileId);
+        adPopupTitle.textContent = isAI ? 'Unlock AI Prompt (Step ' + (currentWatched + 1) + ' of ' + reqAds + ')' : 'Unlock Step ' + (currentWatched + 1) + ' of ' + reqAds;
+        adPopupText.innerHTML = 'আনলক করতে নিচের বাটনে ক্লিক করুন। একটি নতুন ট্যাবে অ্যাড খুলবে। <b>অন্তত ৮ সেকেন্ড</b> অপেক্ষা করুন।';
+        adPopupBtn.disabled = false;
+        adPopupBtn.innerHTML = '<i class="fas fa-external-link-alt mr-2"></i> Open Ad & Unlock';
+        adPopupStatus.textContent = '';
+        adWarning.classList.remove('show');
+        adTimerDisplay.style.display = 'none';
+        adTimerDisplay.textContent = AD_REQUIRED_SECONDS;
+        adProgressBar.style.display = 'none';
+        adProgressFill.style.width = '0%';
+        adPopup.classList.add('active');
+    };
+
+    window.openAdsterraLink = async function() {
+        const adsterraLink = (appSettings.ads && appSettings.ads.adsterraDirectLink) || '';
+        if (!adsterraLink) { adPopupStatus.textContent = '⚠️ Not configured.'; return; }
+
+        adPopupBtn.disabled = true;
+        adPopupBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Ad Opened...';
+        adPopupStatus.textContent = 'অ্যাড নতুন ট্যাবে খোলা হয়েছে। ৮ সেকেন্ড অপেক্ষা করুন...';
+        adWarning.classList.add('show');
+
+        const adWindow = window.open(adsterraLink, '_blank');
+        if (!adWindow || adWindow.closed || typeof adWindow.closed == 'undefined') {
+            adPopupStatus.textContent = '⚠️ Popup blocked! Please allow popups.';
+            adPopupBtn.disabled = false;
+            adPopupBtn.innerHTML = '<i class="fas fa-external-link-alt mr-2"></i> Try Again';
+            return;
+        }
+
+        adWindowOpened = true; adSecondsElapsed = 0;
+        adTimerDisplay.style.display = 'block';
+        adTimerDisplay.textContent = AD_REQUIRED_SECONDS;
+        adProgressBar.style.display = 'block';
+        adProgressFill.style.width = '0%';
+
+        let remaining = AD_REQUIRED_SECONDS;
+        adTimerInterval = setInterval(function() {
+            remaining--; adSecondsElapsed++;
+            if (remaining > 0) {
+                adTimerDisplay.textContent = remaining;
+                const pct = ((AD_REQUIRED_SECONDS - remaining) / AD_REQUIRED_SECONDS) * 100;
+                adProgressFill.style.width = pct + '%';
+                adPopupStatus.textContent = '⏳ ' + remaining + ' সেকেন্ড বাকি...';
+            } else {
+                adTimerDisplay.textContent = '0';
+                adProgressFill.style.width = '100%';
+                clearInterval(adTimerInterval);
+                adPopupStatus.textContent = '✅ সময় সম্পূর্ণ!';
+                completeAdUnlock();
+            }
+        }, 1000);
+
+        adCheckInterval = setInterval(function() {
+            try {
+                if (adWindow.closed && !adUnlockCompleted) {
+                    clearInterval(adCheckInterval);
+                    if (adSecondsElapsed < AD_REQUIRED_SECONDS) {
+                        clearInterval(adTimerInterval);
+                        adWarning.classList.add('show');
+                        adWarning.innerHTML = '<i class="fas fa-exclamation-triangle"></i> আপনি ৮ সেকেন্ডের আগে অ্যাড বন্ধ করেছেন!';
+                        adPopupStatus.textContent = '❌ অ্যাড খুব দ্রুত বন্ধ হয়েছে।';
+                        adPopupBtn.disabled = false;
+                        adPopupBtn.innerHTML = '<i class="fas fa-redo mr-2"></i> Try Again';
+                        adTimerDisplay.style.display = 'none';
+                        adProgressBar.style.display = 'none';
+                        adProgressFill.style.width = '0%';
+                        adWindowOpened = false;
+                    }
+                }
+            } catch(e) {}
+        }, 500);
+    };
+
+    async function completeAdUnlock() {
+        if (adUnlockCompleted) return;
+        adUnlockCompleted = true;
+        if (!pendingAdFileId) return;
+
+        clearInterval(adTimerInterval); clearInterval(adCheckInterval);
+        adPopupBtn.disabled = true;
+        adPopupBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Unlocked!';
+        adPopupStatus.textContent = '✅ আনলক হচ্ছে...';
+        adWarning.classList.remove('show');
+
+        const newWatchedCount = pendingAdCurrentWatched + 1;
+        try {
+            if (currentUser) {
+                const statusRef = database.ref('user_file_status/' + currentUser.uid + '_' + pendingAdFileId);
+                await statusRef.set(newWatchedCount);
+                await usersRef.child(currentUser.uid).child('adsWatched').transaction(function(c) { return (c || 0) + 1; });
+            } else {
+                localStorage.setItem('ad_' + pendingAdFileId, newWatchedCount);
+            }
+        } catch(e) { console.error(e); }
+
+        setTimeout(function() { closeAdPopup(); handleRoute(); }, 1200);
+    }
+
+    window.closeAdPopup = function() {
+        if (adWindowOpened && !adUnlockCompleted && adSecondsElapsed < AD_REQUIRED_SECONDS) {
+            const confirmClose = confirm('⚠️ আপনি এখনও ৮ সেকেন্ড পূর্ণ করেননি। বন্ধ করলে স্টেপ আবার শুরু করতে হবে।');
+            if (!confirmClose) return;
+        }
+        adPopup.classList.remove('active');
+        adProgressBar.style.display = 'none'; adProgressFill.style.width = '0%';
+        adTimerDisplay.style.display = 'none'; adWarning.classList.remove('show');
+        if (adTimerInterval) clearInterval(adTimerInterval);
+        if (adCheckInterval) clearInterval(adCheckInterval);
+        adWindowOpened = false; adSecondsElapsed = 0;
+        adUnlockCompleted = false; pendingAdFileId = null;
+    };
+
+    adPopup.addEventListener('click', function(e) { if (e.target === adPopup) closeAdPopup(); });
+
+    function initCarousel(innerId, dotsId, count, isHome) {
+        const inner = document.getElementById(innerId); const dots = document.getElementById(dotsId) ? document.getElementById(dotsId).children : null;
+        if (!inner || !dots) return;
+        let idx = 0; let interval;
+        function update() { inner.style.transform = 'translateX(-' + (idx * 100) + '%)'; for(let i=0; i<dots.length; i++) dots[i].classList.remove('active'); if (dots[idx]) dots[idx].classList.add('active'); }
+        function next() { idx = (idx + 1) % count; update(); }
+        function prev() { idx = (idx - 1 + count) % count; update(); }
+        function startTimer() { interval = setInterval(next, 5000); if(isHome) bannerInterval = interval; else detailInterval = interval; }
+        startTimer();
+        let touchStartX = 0; let touchEndX = 0;
+        inner.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; clearInterval(interval); }, {passive: true});
+        inner.addEventListener('touchend', function(e) { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 50) next(); if (touchEndX > touchStartX + 50) prev(); startTimer(); }, {passive: true});
+    }
+
+    function renderUpload() {
+        document.title = "Upload - FileHub";
+        if (!currentUser) { showAuthModal(); return; }
+
+        app.innerHTML = 
+            '<div class="upload-form">' +
+                '<h1 style="font-size:1.5rem;font-weight:700;margin-bottom:24px;">Upload New File</h1>' +
+                '<div id="upload-alert" class="alert hidden"></div>' +
+                '<form id="upload-form">' +
+                    '<div class="form-group"><label class="form-label">Title</label><input type="text" id="upload-title" class="form-control" placeholder="Enter file title" required></div>' +
+                    '<div class="form-group"><label class="form-label">Description</label><textarea id="upload-description" class="form-control" rows="4" placeholder="Markdown supported" required></textarea></div>' +
+                    '<div class="form-group"><label class="form-label">File Extension</label><input type="text" id="upload-extension" class="form-control" placeholder=".zip" required></div>' +
+                    '<div class="form-group"><label class="form-label">Thumbnail URL</label><input type="url" id="upload-thumbnail" class="form-control" required></div>' +
+                    '<div class="form-group"><label class="form-label">Download URL</label><input type="url" id="upload-download" class="form-control" required></div>' +
+                    '<div class="form-group"><label class="form-label">Detail Photos (comma separated)</label><textarea id="upload-photos" class="form-control" rows="2"></textarea></div>' +
+                    '<div class="upload-notice"><i class="fas fa-info-circle"></i><span><strong>Note:</strong> Your upload will be reviewed by an Admin before it becomes public.</span></div>' +
+                    '<button type="submit" class="btn btn-primary" id="upload-btn" style="margin-top:16px;"><i class="fas fa-upload mr-2"></i> Upload File</button>' +
+                '</form>' +
+            '</div>';
+
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('upload-btn');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
+            
+            const fileData = {
+                title: document.getElementById('upload-title').value,
+                description: document.getElementById('upload-description').value,
+                file_extension: document.getElementById('upload-extension').value,
+                thumbnail_url: document.getElementById('upload-thumbnail').value,
+                download_url: document.getElementById('upload-download').value,
+                required_ads: 0,
+                detail_photos: document.getElementById('upload-photos').value.split(',').map(function(u) { return u.trim(); }).filter(function(u) { return u; }),
+                status: 'pending',
+                created_at: Date.now(),
+                total_downloads: 0,
+                uploadedBy: currentUser.uid,
+                uploadedByEmail: currentUser.email
+            };
+            
+            try {
+                await filesRef.push(fileData);
+                showAlert('upload-alert', 'File uploaded successfully!', 'success');
+                document.getElementById('upload-form').reset();
+                setTimeout(function() { navigateTo('/profile'); }, 2000);
+            } catch (error) {
+                showAlert('upload-alert', error.message, 'error');
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Upload File';
+            }
+        });
+    }
+
+    function renderProfile() {
+        document.title = "Profile - FileHub";
+        if (!currentUser) { showAuthModal(); return; }
+
+        const userFiles = allFiles.filter(function(f) { return f.uploadedBy === currentUser.uid; });
+        const totalDownloads = userFiles.reduce(function(sum, f) { return sum + (f.total_downloads || 0); }, 0);
+        const approvedFiles = userFiles.filter(function(f) { return f.status === 'approved'; }).length;
+        const pendingFiles = userFiles.filter(function(f) { return f.status === 'pending'; }).length;
+        const rejectedFiles = userFiles.filter(function(f) { return f.status === 'rejected'; }).length;
+
+        let adsWatched = (currentUserData && currentUserData.adsWatched) || 0;
+        const joinDate = currentUser.metadata && currentUser.metadata.creationTime ? new Date(currentUser.metadata.creationTime) : new Date();
+        const formattedJoinDate = (joinDate.getMonth()+1) + '/' + joinDate.getDate() + '/' + joinDate.getFullYear();
+
+        const username = (currentUserData && currentUserData.username) || 'username';
+        const fullname = (currentUserData && currentUserData.fullname) || currentUser.displayName || 'User';
+        const avatar = (currentUserData && currentUserData.avatar) || 'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';
+        const isActive = !currentUserData || currentUserData.isAccountActive !== false;
+        const displayId = (currentUserData && currentUserData.numericId) || currentUser.uid.substring(0,10);
+
+        app.innerHTML = 
+            '<div class="profile-container">' +
+                '<div class="profile-header">' +
+                    '<div class="profile-avatar-wrapper">' +
+                        '<img src="' + avatar + '" class="profile-avatar" id="profileAvatar" onclick="openLightbox(this.src)" onerror="this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'">' +
+                        '<div class="profile-avatar-edit" onclick="editAvatar()"><i class="fas fa-camera"></i></div>' +
+                    '</div>' +
+                    '<div class="profile-info">' +
+                        '<h1 class="profile-name">' + escapeHtmlUser(fullname) + '</h1>' +
+                        '<div class="profile-username"><i class="fas fa-at"></i> ' + escapeHtmlUser(username) + '</div>' +
+                        '<div class="profile-id"><i class="fas fa-id-badge"></i> ID: ' + displayId + '</div>' +
+                        '<div class="profile-badges"><span class="badge ' + (isActive ? 'badge-active' : 'badge-inactive') + '"><i class="fas ' + (isActive ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + (isActive ? 'Active' : 'Inactive') + '</span></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="stats-grid">' +
+                    '<div class="stat-card"><div class="stat-icon"><i class="fas fa-download"></i></div><div class="stat-content"><div class="stat-value">' + totalDownloads + '</div><div class="stat-label">Downloads</div></div></div>' +
+                    '<div class="stat-card"><div class="stat-icon"><i class="fas fa-cloud-upload-alt"></i></div><div class="stat-content"><div class="stat-value">' + userFiles.length + '</div><div class="stat-label">Uploads</div></div></div>' +
+                    '<div class="stat-card"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-content"><div class="stat-value">' + adsWatched + '</div><div class="stat-label">Ads Watched</div></div></div>' +
+                    '<div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-alt"></i></div><div class="stat-content"><div class="stat-value">' + formattedJoinDate + '</div><div class="stat-label">Joined</div></div></div>' +
+                '</div>' +
+                '<div class="profile-actions">' +
+                    '<button class="action-btn" onclick="openEditProfileModal()"><i class="fas fa-user-edit"></i> Edit Profile</button>' +
+                    '<button class="action-btn" onclick="openChangePasswordModal()"><i class="fas fa-key"></i> Change Password</button>' +
+                    '<button class="action-btn danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>' +
+                '</div>' +
+                '<div class="uploads-section">' +
+                    '<div class="uploads-header">' +
+                        '<h2 class="uploads-title"><i class="fas fa-cloud-upload-alt" style="color: var(--primary);"></i> Your Uploads</h2>' +
+                        '<div class="upload-stats">' +
+                            '<div class="upload-stat"><div class="upload-stat-value">' + approvedFiles + '</div><div class="upload-stat-label">Approved</div></div>' +
+                            '<div class="upload-stat"><div class="upload-stat-value" style="color:#f59e0b">' + pendingFiles + '</div><div class="upload-stat-label">Pending</div></div>' +
+                            '<div class="upload-stat"><div class="upload-stat-value" style="color:#ef4444">' + rejectedFiles + '</div><div class="upload-stat-label">Rejected</div></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="file-grid">' +
+                        (userFiles.length > 0 ? userFiles.map(function(f) {
+                            let statusClass = f.status === 'approved' ? 'status-approved' : f.status === 'pending' ? 'status-pending' : 'status-rejected';
+                            let statusIcon = f.status === 'approved' ? '<i class="fas fa-check-circle"></i>' : f.status === 'pending' ? '<i class="fas fa-clock"></i>' : '<i class="fas fa-times-circle"></i>';
+                            
+                            return '<div class="file-card" onclick="navigateTo(\'/file/' + f.id + '\')">' +
+                                '<img src="' + (f.thumbnail_url || '') + '" class="card-thumb" onerror="this.onerror=null;this.src=\'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png\'">' +
+                                '<div class="card-body"><div class="card-title">' + escapeHtmlUser(f.title || 'Untitled') + '</div>' +
+                                '<div class="card-footer"><span class="status-badge ' + statusClass + '">' + statusIcon + ' ' + (f.status || 'pending') + '</span>' +
+                                '<span class="meta-pill"><i class="fas fa-download"></i> ' + (f.total_downloads || 0) + '</span></div></div></div>';
+                        }).join('') : '<div class="no-uploads"><i class="fas fa-cloud-upload-alt"></i><p>No files uploaded yet.</p><button class="btn btn-primary" onclick="navigateTo(\'/upload\')"><i class="fas fa-upload"></i> Upload Now</button></div>') +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    window.openEditProfileModal = function() {
+        document.getElementById('editProfileModalContent').innerHTML = 
+            '<h2 class="modal-title">Edit Profile</h2>' +
+            '<div id="editProfileAlert" class="alert hidden"></div>' +
+            '<form id="editProfileForm">' +
+                '<div class="form-group"><label class="form-label">Full Name</label><input type="text" id="editFullName" class="form-control" value="' + escapeHtmlUser((currentUserData && currentUserData.fullname) || '') + '" required></div>' +
+                '<div class="form-group"><label class="form-label">Username</label><input type="text" id="editUsername" class="form-control" value="' + escapeHtmlUser((currentUserData && currentUserData.username) || '') + '" required></div>' +
+                '<div class="form-group"><label class="form-label">Avatar URL</label><input type="url" id="editAvatar" class="form-control" value="' + escapeHtmlUser((currentUserData && currentUserData.avatar) || '') + '"></div>' +
+                '<button type="submit" class="btn btn-primary" id="editProfileBtn"><i class="fas fa-save mr-2"></i> Save Changes</button>' +
+            '</form>';
+        document.getElementById('editProfileForm').addEventListener('submit', saveProfileChanges);
+        openModal('editProfileModal');
+    };
+
+    async function saveProfileChanges(e) {
+        e.preventDefault();
+        const btn = document.getElementById('editProfileBtn');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+        
+        const updates = {
+            fullname: document.getElementById('editFullName').value,
+            username: document.getElementById('editUsername').value,
+            avatar: document.getElementById('editAvatar').value
+        };
+        
+        try {
+            await usersRef.child(currentUser.uid).update(updates);
+            currentUserData = Object.assign({}, currentUserData, updates);
+            showModalAlert('editProfileAlert', 'Profile updated!', 'success');
+            setTimeout(function() { closeModal('editProfileModal'); renderProfile(); }, 1500);
+        } catch (error) {
+            showModalAlert('editProfileAlert', error.message, 'error');
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Changes';
+        }
+    }
+
+    window.openChangePasswordModal = function() {
+        document.getElementById('changePasswordModalContent').innerHTML = 
+            '<h2 class="modal-title">Change Password</h2>' +
+            '<div id="changePasswordAlert" class="alert hidden"></div>' +
+            '<form id="changePasswordForm">' +
+                '<div class="form-group"><label class="form-label">Current Password</label><input type="password" id="currentPassword" class="form-control" required></div>' +
+                '<div class="form-group"><label class="form-label">New Password</label><input type="password" id="newPassword" class="form-control" required></div>' +
+                '<div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" id="confirmPassword" class="form-control" required></div>' +
+                '<button type="submit" class="btn btn-primary" id="changePasswordBtn"><i class="fas fa-key mr-2"></i> Update Password</button>' +
+            '</form>';
+        document.getElementById('changePasswordForm').addEventListener('submit', changePassword);
+        openModal('changePasswordModal');
+    };
+
+    async function changePassword(e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const btn = document.getElementById('changePasswordBtn');
+        
+        if (newPassword !== confirmPassword) { showModalAlert('changePasswordAlert', 'Passwords do not match!', 'error'); return; }
+        if (newPassword.length < 6) { showModalAlert('changePasswordAlert', 'Password must be 6+ characters!', 'error'); return; }
+        
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+        
+        try {
+            const credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
+            await currentUser.reauthenticateWithCredential(credential);
+            await currentUser.updatePassword(newPassword);
+            showModalAlert('changePasswordAlert', 'Password changed!', 'success');
+            setTimeout(function() { closeModal('changePasswordModal'); }, 1500);
+        } catch (error) {
+            showModalAlert('changePasswordAlert', error.message, 'error');
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-key mr-2"></i> Update Password';
+        }
+    }
+
+    window.editAvatar = function() { openEditProfileModal(); };
+    window.logout = async function() { await auth.signOut(); navigateTo('/'); };
+
+    function showAlert(elementId, message, type) {
+        if (type === undefined) type = 'success';
+        const alert = document.getElementById(elementId);
+        if (alert) {
+            alert.textContent = message;
+            alert.className = 'alert alert-' + type;
+            alert.classList.remove('hidden');
+            setTimeout(function() { alert.classList.add('hidden'); }, 3000);
+        }
+    }
+    function showModalAlert(elementId, message, type) {
+        if (type === undefined) type = 'success';
+        const alert = document.getElementById(elementId);
+        if (alert) { alert.textContent = message; alert.className = 'alert alert-' + type; alert.classList.remove('hidden'); }
+    }
+
+    chatInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; });
+
+    initTheme();
+    currentRoute = window.location.pathname || '/';
+    if (window.location.hash && window.location.hash.startsWith('#/')) {
+        currentRoute = window.location.hash.substring(1);
+    }
+
+    setTimeout(function() {
+        if (!app.innerHTML || app.innerHTML.trim() === '') {
+            handleRoute();
+        }
+    }, 100);
+</script>
+</body>
+</html>

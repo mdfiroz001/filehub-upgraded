@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -146,7 +147,7 @@
         .search-overlay.active { transform: scaleX(1); }
         .search-box-wrapper { flex: 1; display: flex; align-items: center; height: 40px; border: 1.5px solid var(--border); border-radius: 50px; background: var(--bg); padding: 0 5px; }
         .search-input { flex: 1; border: none; background: transparent; padding: 0 5px; color: var(--text-main); outline: none; }
-        .search-back-btn, .search-clear-btn { background: none; border: none; color: var(--text-sub); width: 35px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .search-back-btn, .search-clear-btn { background: none; border: none; color: var(--text-sub); width: 35px; cursor: display: flex; justify-content: center; align-items: center; }
         .search-clear-btn { visibility: hidden; } .search-clear-btn.visible { visibility: visible; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
@@ -306,6 +307,7 @@
             line-height: 1.8;
             color: var(--text-main);
             font-size: 1rem;
+            word-break: break-word;
         }
 
         .detail-desc::before {
@@ -465,6 +467,33 @@
         .detail-desc table th { background: var(--primary); color: white; padding: 12px; text-align: left; font-weight: 700; font-size: 0.85rem; }
         .detail-desc table td { padding: 12px; border-top: 1px solid var(--border); background: var(--surface); }
         .detail-desc table tr:nth-child(even) td { background: var(--bg); }
+
+        /* ==================== ফিক্স: ডেসক্রিপশনের ইমেজ রেসপন্সিভ এবং সুন্দর ফরম্যাটিং ==================== */
+        .detail-desc img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block;
+            margin: 18px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            object-fit: contain;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .detail-desc img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .detail-desc p:has(> img) {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
 
         .unlock-inline { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); }
         
@@ -1138,13 +1167,12 @@
             .replace(/'/g, '&#039;');
     }
 
-    // ==================== CATEGORY DETECTION ====================
     function getFileCategory(file) {
         if (!file) return 'other';
         if (file.isAIPrompt) return 'ai-prompt';
         const ext = (file.file_extension || '').toLowerCase().replace('.', '');
         if (ext === 'apk') return 'apk';
-        return 'file'; // zip, rar, html, php, pdf, etc.
+        return 'file';
     }
 
     function getAIPromptFiles() {
@@ -1368,7 +1396,6 @@
         alert.classList.remove('hidden');
     }
 
-
     function applyCustomCode(slotId, code) {
         const el=document.getElementById(slotId); if(!el) return; el.innerHTML='';
         if(!code) return;
@@ -1376,6 +1403,7 @@
         el.appendChild(tpl.content.cloneNode(true));
         el.querySelectorAll('script').forEach(function(old){ const s=document.createElement('script'); Array.from(old.attributes).forEach(x=>s.setAttribute(x.name,x.value)); s.textContent=old.textContent; old.replaceWith(s); });
     }
+
     function applyAppSettings() {
         const appCfg=appSettings.app||{}, ads=appSettings.ads||{};
         const primary=appCfg.primaryColor||'#4f46e5', accent=appCfg.accentColor||'#818cf8';
@@ -1389,6 +1417,7 @@
         if(action && ads.noticeButtonUrl){action.href=ads.noticeButtonUrl; action.textContent=ads.noticeButtonText||'Open'; action.classList.remove('hidden');} else if(action) action.classList.add('hidden');
         document.title=(appCfg.appName||'FileHub')+' — Secure File Sharing';
     }
+
     function showWelcomePopup(){ const cfg=appSettings.welcome||{}; if(cfg.enabled===false || !cfg.message || sessionStorage.getItem('fh_welcome_seen')) return; document.getElementById('welcomeTitle').textContent=cfg.title||'Welcome to FileHub'; document.getElementById('welcomeMessage').textContent=cfg.message; const b=document.getElementById('welcomeAction'); b.textContent=cfg.buttonText||'Explore now'; if(cfg.buttonUrl){b.onclick=function(){window.open(cfg.buttonUrl,'_blank','noopener');closeWelcomePopup();};} document.getElementById('welcomeOverlay').classList.add('active'); }
     window.closeWelcomePopup=function(){sessionStorage.setItem('fh_welcome_seen','1');document.getElementById('welcomeOverlay').classList.remove('active');};
 
@@ -1772,7 +1801,6 @@
             '<button class="error-btn" onclick="navigateTo(\'/\')">Go Home</button></div>';
     }
 
-
     function renderCollectionPage(kind){
         const isPrompt=kind==='prompts'; document.title=(isPrompt?'AI Image Prompts':'Files & Downloads')+' — FileHub';
         const items=isPrompt?getAIPromptFiles():allFiles.filter(function(f){return f.status==='approved';});
@@ -1916,7 +1944,6 @@
             const approvedFiles = allFiles.filter(function(f) { return f.status === 'approved'; });
             const aiPromptFiles = getAIPromptFiles();
             
-            // Split files by category
             const apkFiles = approvedFiles.filter(function(f) {
                 return (f.file_extension || '').toLowerCase().replace('.', '') === 'apk';
             });
@@ -1924,7 +1951,6 @@
                 return (f.file_extension || '').toLowerCase().replace('.', '') !== 'apk';
             });
 
-            // Banner HTML
             let bannerHTML = '';
             if (allBanners.length > 0) {
                 const dots = allBanners.map(function(_, i) { return '<span class="dot-c ' + (i===0?'active':'') + '"></span>'; }).join('');
@@ -1943,10 +1969,8 @@
                     '<div class="carousel-dots" id="homeDots">' + dots + '</div>';
             }
 
-            // Build Category Sections
             let sectionsHTML = '';
 
-            // Section 1: APK Apps
             if (apkFiles.length > 0) {
                 sectionsHTML += 
                     '<div class="section-header">' +
@@ -1957,7 +1981,6 @@
                     '<div class="file-grid">' + apkFiles.map(buildFileCardHTML).join('') + '</div>';
             }
 
-            // Section 2: Other Files (zip, rar, html, php, pdf, etc.)
             if (otherFiles.length > 0) {
                 sectionsHTML += 
                     '<div class="section-header">' +
@@ -1968,7 +1991,6 @@
                     '<div class="file-grid">' + otherFiles.map(buildFileCardHTML).join('') + '</div>';
             }
 
-            // Section 3: AI Prompts
             if (aiPromptFiles.length > 0) {
                 sectionsHTML += 
                     '<div class="section-header">' +
@@ -1979,7 +2001,6 @@
                     '<div class="file-grid">' + aiPromptFiles.map(buildFileCardHTML).join('') + '</div>';
             }
 
-            // Empty state
             if (apkFiles.length === 0 && otherFiles.length === 0 && aiPromptFiles.length === 0) {
                 sectionsHTML = '<p style="text-align:center;color:var(--text-sub);padding:40px;grid-column:1/-1;">No items found.</p>';
             }
@@ -2128,6 +2149,16 @@
                 '</div>';
             
             hljs.highlightAll();
+
+            // Description এ থাকা সব ছবিতে লাইটবক্স প্রিভিউ সক্রিয় করা
+            const descImages = document.querySelectorAll('.detail-desc img');
+            descImages.forEach(function(img) {
+                img.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openLightbox(this.src);
+                });
+            });
+
             if (item.detail_photos && item.detail_photos.length > 1) initCarousel('detailInner', 'detailDots', item.detail_photos.length, false);
 
             renderUnlockLogic(type, item, watched);

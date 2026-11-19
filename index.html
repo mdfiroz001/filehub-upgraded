@@ -152,12 +152,12 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* ==================== ফিক্স: নোটিশ বোর্ড স্মুথ স্ক্রলিং ==================== */
+        /* ==================== নোটিশ বোর্ড: ধীরগতি, স্পষ্ট ও স্মুথ স্ক্রলিং ==================== */
         .scrolling-notice-container {
             background: var(--primary);
             color: #ffffff;
-            padding: 9px 16px;
-            font-size: 0.92rem;
+            padding: 10px 16px;
+            font-size: 0.95rem;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -171,7 +171,7 @@
         }
 
         .scrolling-notice-container i {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
             color: #facc15;
         }
@@ -187,12 +187,13 @@
             display: inline-block;
             white-space: nowrap;
             padding-left: 100%;
-            animation: noticeScroll 40s linear infinite;
+            animation: noticeScroll 40s linear infinite; /* স্বাভাবিক গতি অনেক শান্ত ও ধীর রাখা হয়েছে */
             will-change: transform;
         }
 
-        .notice-ticker-wrap:hover .notice-ticker-content {
-            animation-play-state: paused;
+        .notice-ticker-wrap:hover .notice-ticker-content,
+        .notice-ticker-wrap:active .notice-ticker-content {
+            animation-play-state: paused; /* টাচ বা মাউস রাখলে পড়া সুবিধার জন্য পজ হবে */
         }
 
         @keyframes noticeScroll {
@@ -203,15 +204,16 @@
         .notice-action-btn {
             color: #fff;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,.65);
-            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,.7);
+            padding: 5px 14px;
             border-radius: 999px;
             font-size: .8rem;
             white-space: nowrap;
             flex-shrink: 0;
-            transition: 0.20s;
+            transition: 0.2s;
+            font-weight: 600;
         }
-        .notice-action-btn:hover { background: rgba(255,255,255,0.2); }
+        .notice-action-btn:hover { background: rgba(255,255,255,0.25); }
 
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .bottom-sheet-overlay.active { opacity: 1; visibility: visible; }
@@ -529,7 +531,6 @@
         .detail-desc table td { padding: 12px; border-top: 1px solid var(--border); background: var(--surface); }
         .detail-desc table tr:nth-child(even) td { background: var(--bg); }
 
-        /* ডেসক্রিপশনের ইমেজ রেসপন্সিভ স্টাইল */
         .detail-desc img {
             max-width: 100% !important;
             height: auto !important;
@@ -954,7 +955,7 @@
 </header>
 
 <div class="container">
-    <!-- ফিক্সড নোটিশ কনটেইনার -->
+    <!-- নোটিশ বোর্ড কনটেইনার -->
     <div id="scrolling-notice-container" class="scrolling-notice-container hidden">
         <i class="fas fa-bullhorn"></i>
         <div class="notice-ticker-wrap">
@@ -1291,7 +1292,7 @@
 
     function updateThemeIcon(mode) {
         if (mode === 'dark') themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-        else themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        else themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
     }
 
     function updateThemeColor(mode) {
@@ -1473,7 +1474,7 @@
         applyCustomCode('header-ad-slot', ads.headerCode || '');
         applyCustomCode('footer-ad-slot', ads.footerCode || '');
 
-        // ফিক্সড নোটিশ স্ক্রলিং সেটআপ
+        // নোটিশ এবং বাটনের সঠিক ও স্পষ্ট স্ক্রলিং স্পিড নিয়ন্ত্রণ
         const notice = appCfg.scrollingNotice || '';
         const noticeContainer = document.getElementById('scrolling-notice-container');
         const noticeText = document.getElementById('scrolling-notice-text');
@@ -1483,8 +1484,8 @@
             noticeContainer.classList.remove('hidden');
             noticeText.textContent = notice;
             
-            // লেখার দৈর্ঘ্য অনুযায়ী মসৃণ স্পিড নির্ধারণ (নূন্যতম ১২ সেকেন্ড, সর্বোচ্চ ৩০ সেকেন্ড)
-            const speed = Math.max(12, Math.min(30, notice.length * 0.35));
+            // গতি অনেক শান্ত করা হলো যাতে পরিষ্কারভাবে পড়া যায় (নূন্যতম ৩৫ সেকেন্ড, সর্বোচ্চ ৮০ সেকেন্ড)
+            const speed = Math.max(35, Math.min(80, notice.length * 0.95));
             noticeText.style.animationDuration = speed + 's';
         } else {
             noticeContainer.classList.add('hidden');
@@ -2226,7 +2227,7 @@
             
             hljs.highlightAll();
 
-            // Description এর সকল ইমেজে লাইটবক্স ইভেন্ট যুক্ত করা
+            // Description এর সকল ইমেজে লাইটবক্স প্রিভিউ সক্রিয় করা
             const descImages = document.querySelectorAll('.detail-desc img');
             descImages.forEach(function(img) {
                 img.addEventListener('click', function(e) {

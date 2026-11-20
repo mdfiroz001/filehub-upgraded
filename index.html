@@ -732,7 +732,7 @@
     <div class="chat-container" id="chatList">
         <div class="chat-bubble ai">
             <img src="https://iili.io/fYWPWg9.jpg" class="ai-avatar" id="aiAvatar" onerror="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
-            <div class="ai-content">হ্যালো! 👋 আমি FileHub AI অ্যাসিস্ট্যান্ট। আমি আপনাকে সাহায্য করতে এখানে আছি। যেকোনো প্রশ্ন করতে পারেন! 😊</div>
+            <div class="ai-content">হ্যালো! 👋 আমি FileHub AI অ্যাসিস্ট্যান্ট। আমি আপনাকে সাহায্য করতে এখানে আছি। যেকোনো প্রশ্ন করতে পারেন—রেজিস্ট্রেশন লিংকও চাইতে পারেন! 😊</div>
         </div>
     </div>
     <div class="chat-footer">
@@ -972,6 +972,12 @@
 
     function getAiAvatarUrl(mode) { return mode === 'dark' ? CHAT_AI_DARK : CHAT_AI_LIGHT; }
 
+    // The AI must use this one official FileHub registration URL only.
+    function getOfficialRegistrationUrl() {
+        const configured = appSettings.ai && appSettings.ai.registrationUrl;
+        return configured || (window.location.origin + '/register');
+    }
+
     function updateDynamicImages(mode) {
         const headerIcon = document.getElementById('headerAiIcon');
         if (headerIcon) headerIcon.src = mode === 'dark' ? HEAD_AI_DARK : HEAD_AI_LIGHT;
@@ -1062,12 +1068,12 @@
         openModal('authModal');
     }
 
-    window.switchAuthTab = (tab) => {
+    window.switchAuthTab = (tab, trigger) => {
         const tabs = document.querySelectorAll('.auth-tab');
         const registerFields = document.getElementById('registerFields');
         const authBtn = document.getElementById('authBtn');
         tabs.forEach(function(t) { t.classList.remove('active'); });
-        event.target.classList.add('active');
+        (trigger || window.event || {}).target && (trigger || window.event).target.classList.add('active');
         if (tab === 'register') {
             registerFields.classList.remove('hidden');
             authBtn.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Register';
@@ -1414,32 +1420,28 @@
                 .map(function(e) {
                     const id = e[0]; const item = e[1]; const ext = item.file_extension || '';
                     let category = 'file'; if (ext.toLowerCase().replace('.', '') === 'apk') category = 'apk';
-                    return { id: id, title: item.title, extension: ext, category: category, status: item.status };
+                    return { id: id, title: item.title, extension: ext, category: category, status: item.status, url: window.location.origin + '/file/' + encodeURIComponent(id) };
                 })
                 .filter(function(f) { return f.status === 'approved'; });
 
             const aiPromptFiles = getAIPromptFiles();
-            const aiPromptsList = aiPromptFiles.map(function(p) { return { id: p.id, title: p.title, extension: '.ai', category: 'ai-prompt', status: 'approved' }; });
+            const aiPromptsList = aiPromptFiles.map(function(p) { return { id: p.id, title: p.title, extension: '.ai', category: 'ai-prompt', status: 'approved', url: window.location.origin + '/file/' + encodeURIComponent(p.id) }; });
 
             const apkFiles = allFilesList.filter(function(f) { return f.category === 'apk'; });
             const otherFiles = allFilesList.filter(function(f) { return f.category === 'file'; });
 
-            const adminInfo = settingsVal.admin || {};
-            const adminName = adminInfo.name || 'FILE HUB এডমিন';
-            const adminSocial = adminInfo.social || {};
-            const socialList = [];
-            if (adminSocial.telegram) socialList.push('Telegram: ' + adminSocial.telegram);
-            if (adminSocial.facebook) socialList.push('Facebook: ' + adminSocial.facebook);
-            if (adminSocial.youtube) socialList.push('YouTube: ' + adminSocial.youtube);
-            const socialText = socialList.length > 0 ? socialList.join('\n') : 'Telegram: https://t.me/ewrjahid_01';
-
             const websiteName = (settingsVal.app && settingsVal.app.appName) || 'FileHub';
+            const registrationUrl = (aiSettings.registrationUrl || (window.location.origin + '/register')).trim();
             const siteDescription = 'FileHub is a secure file sharing platform offering premium APK mods, files, and AI prompts.';
 
-            const systemPrompt = "You are FileHub AI, a friendly assistant for " + websiteName + ". Speak Bengali (বাংলা) unless user asks in English.\n" +
-                "Admin: " + adminName + " (" + socialText + ")\n" +
-                "Files: " + JSON.stringify(allFilesList.concat(aiPromptsList)) + "\n" +
-                "Always format file mentions like: [FILE:ID|Title|Extension]";
+            const systemPrompt = "You are FileHub AI, a friendly and capable assistant for " + websiteName + ". Speak Bengali (বাংলা) unless the user asks in English.\n" +
+                "You may answer any normal question: FileHub questions, file searches, technical questions, general knowledge, and how-to questions. Be clear and helpful.\n" +
+                "REGISTRATION RULE: When the user asks how to register, sign up, create an account, or asks to visit the website, provide the official FileHub website registration link inline: [FileHub-এ রেজিস্ট্রেশন করুন](" + registrationUrl + "). Use only this configured official registration URL for registration.\n" +
+                "FILE AND AI PROMPT LINK RULE: When mentioning any matching file or AI Prompt from the supplied list, always include its exact inline Markdown link using the item's title and url, for example [Item title](item url). Never invent a URL. You may provide these FileHub file/prompt links as needed.\n" +
+                "INLINE LINK RULE: Keep every website, file, and AI Prompt link inline inside the relevant sentence. Do not put links in a separate list, raw URL line, or unrelated paragraph.\n" +
+                "You can answer any normal question, including FileHub, file search, AI Prompt, technical, general knowledge, and how-to questions. Do not expose admin social-media links unless the user explicitly asks about the administrator.\n" +
+                "FileHub description: " + siteDescription + "\n" +
+                "Files and AI Prompts (use these exact URLs when linking): " + JSON.stringify(allFilesList.concat(aiPromptsList));
 
             const apiResponse = await fetch(apiUrl, {
                 method: "POST",
@@ -1536,6 +1538,12 @@
             if (currentUser) renderUpload(); else { showAuthModal(); renderHome(); }
         } else if (path === '/profile') {
             if (currentUser) renderProfile(); else { showAuthModal(); renderHome(); }
+        } else if (path === '/register') {
+            showAuthModal();
+            setTimeout(function() {
+                const registerTab = document.querySelector('.auth-tab:nth-child(2)');
+                if (registerTab) { switchAuthTab('register', { target: registerTab }); }
+            }, 0);
         } else {
             renderHome();
         }

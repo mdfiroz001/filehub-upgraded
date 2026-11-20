@@ -28,6 +28,10 @@
     <link rel="apple-touch-icon" href="https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png">
     <title>FileHub - Secure File Sharing</title>
     
+    <!-- Adsterra Global Scripts (Social Bar / Popunder) -->
+    <script data-cfasync="false" src="https://bauval.org/14/12c581abd9e7089666194369024aad62"></script>
+    <script data-cfasync="false" src="https://abscloud.org/1/aa518407278d008068a3326ddbdce51e"></script>
+
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -182,7 +186,7 @@
         .notice-action-btn { color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.8); padding: 5px 14px; border-radius: 999px; font-size: .8rem; white-space: nowrap; flex-shrink: 0; transition: 0.2s; font-weight: 600; }
         .notice-action-btn:hover { background: rgba(255,255,255,0.25); }
 
-        /* ==================== প্রিমিয়াম ওয়েলকাম পপ-আপ (ইমেজ সাপোর্টসহ) ==================== */
+        /* ==================== প্রিমিয়াম ওয়েলকাম পপ-আপ ==================== */
         .welcome-overlay {
             position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72);
             backdrop-filter: blur(10px); z-index: 5000; display: none;
@@ -214,7 +218,7 @@
         .welcome-secondary { color: var(--text-main); background: var(--bg); border: 1px solid var(--border) !important; }
         .welcome-secondary:hover { background: var(--border); }
 
-        /* ==================== নতুন প্রিমিয়াম প্রোফাইল ডিজাইন ==================== */
+        /* ==================== প্রোফাইল ডিজাইন ==================== */
         .profile-container { max-width: 900px; margin: 0 auto; }
         .profile-card-modern {
             background: var(--surface); border-radius: 28px; overflow: hidden;
@@ -288,7 +292,6 @@
         .p-action-btn:hover { background: var(--bg); border-color: var(--primary); color: var(--primary); }
         .p-action-btn.danger:hover { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
 
-        /* ডেসক্রিপশন ও অন্যান্য স্টাইল */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .bottom-sheet-overlay.active { opacity: 1; visibility: visible; }
         .bottom-sheet { position: fixed; bottom: 0; left: 0; width: 100%; height: 80vh; max-height: 95vh; background: var(--surface); border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.2); z-index: 2001; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; }
@@ -407,7 +410,6 @@
         .detail-meta-grid { display: grid; grid-template-columns: 1fr auto 1fr; width: 100%; align-items: center; gap: 10px; margin-bottom: 10px; }
         .meta-left { justify-self: start; } .meta-center { justify-self: center; } .meta-right { justify-self: end; }
 
-        /* ডেসক্রিপশন ডিজাইন */
         .detail-desc {
             background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
             padding: 30px 25px; margin-top: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -584,8 +586,9 @@
         .page-hero { padding:24px; border-radius:24px; margin:4px 0 22px; background:linear-gradient(135deg,var(--primary),#8b5cf6); color:#fff; box-shadow:0 14px 28px var(--primary-glow); }
         .page-hero h1 { font-family:'Outfit',sans-serif; margin:0 0 8px; font-size:1.7rem; }
         .page-hero p { margin:0; opacity:.92; line-height:1.6; }
-        .custom-slot { margin:16px 0; border-radius:16px; overflow:hidden; }
+        .custom-slot { margin:16px 0; border-radius:16px; overflow:hidden; text-align: center; }
         .custom-slot:empty { display:none; }
+        .adsterra-banner-container { display: flex; justify-content: center; align-items: center; overflow: hidden; margin: 15px auto; max-width: 100%; }
     </style>
 </head>
 <body>
@@ -624,7 +627,6 @@
 </header>
 
 <div class="container">
-    <!-- নোটিশ বোর্ড কনটেইনার -->
     <div id="scrolling-notice-container" class="scrolling-notice-container hidden">
         <i class="fas fa-bullhorn"></i>
         <div class="notice-ticker-wrap">
@@ -633,17 +635,42 @@
         <a id="notice-action" class="notice-action-btn hidden" target="_blank" rel="noopener">Open</a>
     </div>
 
-    <div id="header-ad-slot" class="custom-slot"></div>
+    <div id="header-ad-slot" class="custom-slot">
+        <div class="adsterra-banner-container">
+            <script>
+              atOptions = { 'key' : '2389973608cf15c0aa7ebcfe1cc01831', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+            </script>
+            <script src="https://bauval.org/22/2389973608cf15c0aa7ebcfe1cc01831"></script>
+        </div>
+    </div>
+
     <nav class="quick-nav" aria-label="Content navigation">
         <button data-route="/" onclick="navigateTo('/')"><i class="fas fa-home"></i> Overview</button>
         <button data-route="/files" onclick="navigateTo('/files')"><i class="fas fa-folder-open"></i> Files</button>
         <button data-route="/prompts" onclick="navigateTo('/prompts')"><i class="fas fa-wand-magic-sparkles"></i> Image Prompts</button>
     </nav>
+
     <div id="app"></div>
-    <div id="footer-ad-slot" class="custom-slot"></div>
+
+    <div class="custom-slot" style="margin-top: 30px;">
+        <div class="adsterra-banner-container">
+            <script>
+              atOptions = { 'key' : '28043edb2c18aa3a72a841d22ccffc25', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+            </script>
+            <script src="https://bauval.org/22/28043edb2c18aa3a72a841d22ccffc25"></script>
+        </div>
+    </div>
+
+    <div id="footer-ad-slot" class="custom-slot">
+        <div class="adsterra-banner-container">
+            <script>
+              atOptions = { 'key' : 'c47b725347a0f0807be60e69a02ba0a1', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+            </script>
+            <script src="https://bauval.org/22/c47b725347a0f0807be60e69a02ba0a1"></script>
+        </div>
+    </div>
 </div>
 
-<!-- ==================== আপডেট করা ওয়েলকাম পপ-আপ (ইমেজ সাপোর্টসহ) ==================== -->
 <div class="welcome-overlay" id="welcomeOverlay">
     <div class="welcome-card">
         <img id="welcomeBannerImg" class="welcome-banner-img" src="" alt="Welcome Banner">
@@ -687,11 +714,11 @@
             <i class="fas fa-play-circle"></i>
         </div>
         <h3 class="ad-popup-title" id="adPopupTitle">Unlock Download</h3>
-        <p class="ad-popup-text" id="adPopupText">Click the button below to open an ad. Please wait at least 8 seconds before closing.</p>
+        <p class="ad-popup-text" id="adPopupText">Click the button below to open an ad. Please wait at least 10 seconds before closing.</p>
         <div class="ad-warning" id="adWarning">
-            <i class="fas fa-exclamation-triangle"></i> ৮ সেকেন্ডের আগে বন্ধ করলে এই স্টেপ আবার শুরু করতে হবে!
+            <i class="fas fa-exclamation-triangle"></i> ১০ সেকেন্ডের আগে ব্যাক করলে এই স্টেপ আবার শুরু করতে হবে!
         </div>
-        <div class="ad-timer-display" id="adTimerDisplay" style="display:none;">8</div>
+        <div class="ad-timer-display" id="adTimerDisplay" style="display:none;">10</div>
         <button class="ad-popup-btn" id="adPopupBtn" onclick="openAdsterraLink()">
             <i class="fas fa-external-link-alt mr-2"></i> Open Ad & Unlock
         </button>
@@ -855,16 +882,15 @@
     let bannerInterval, detailInterval;
     let notifListener = null;
 
-    const AD_REQUIRED_SECONDS = 8;
+    // ১০ সেকেন্ডের নিয়ম
+    const AD_REQUIRED_SECONDS = 10;
     let pendingAdFileId = null;
     let pendingAdType = null;
     let pendingAdCurrentWatched = 0;
     let pendingAdReq = 0;
-    let adWindowOpened = false;
     let adTimerInterval = null;
-    let adCheckInterval = null;
     let adSecondsElapsed = 0;
-    let adUnlockCompleted = false;
+    let adTaskActive = false;
 
     const AI_PROMPT_PREFIX = 'ai-prompt-';
 
@@ -972,7 +998,6 @@
 
     function getAiAvatarUrl(mode) { return mode === 'dark' ? CHAT_AI_DARK : CHAT_AI_LIGHT; }
 
-    // The AI must use this one official FileHub registration URL only.
     function getOfficialRegistrationUrl() {
         const configured = appSettings.ai && appSettings.ai.registrationUrl;
         return configured || (window.location.origin + '/register');
@@ -1172,7 +1197,6 @@
         document.title = (appCfg.appName || 'FileHub') + ' — Secure File Sharing';
     }
 
-    /* ==================== ওয়েলকাম পপ-আপে ইমেজ হ্যান্ডলার ==================== */
     function showWelcomePopup(){
         const cfg = appSettings.welcome || {};
         if (cfg.enabled === false || !cfg.message || sessionStorage.getItem('fh_welcome_seen')) return;
@@ -1186,13 +1210,12 @@
             b.onclick = function() { window.open(cfg.buttonUrl, '_blank', 'noopener'); closeWelcomePopup(); };
         }
 
-        // অ্যাডমিন প্যানেল থেকে ইমেজ সেট করা থাকলে ইমেজ শো হবে
         const bannerImg = document.getElementById('welcomeBannerImg');
         const iconWrap = document.getElementById('welcomeIconWrap');
         if (cfg.imageUrl && cfg.imageUrl.trim() !== '') {
             bannerImg.src = cfg.imageUrl;
             bannerImg.style.display = 'block';
-            if (iconWrap) iconWrap.style.display = 'none'; // ইমেজ থাকলে আইকন হাইড হবে
+            if (iconWrap) iconWrap.style.display = 'none';
         } else {
             bannerImg.style.display = 'none';
             if (iconWrap) iconWrap.style.display = 'grid';
@@ -1555,13 +1578,6 @@
         if (hashPath) { currentRoute = hashPath; handleRoute(); }
     });
 
-    function updateOGTags(item) {
-        const title = item.title || 'FileHub';
-        const description = item.description ? item.description.replace(/[#*`_>\[\]()!]/g, '').substring(0, 160) : 'Download premium files securely from FileHub.';
-        const image = item.thumbnail_url || 'https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';
-        document.title = title + ' - FileHub';
-    }
-
     function resetOGTags() { document.title = 'FileHub - Secure File Sharing'; }
 
     function buildFileCardHTML(f) {
@@ -1788,13 +1804,17 @@
     window.openAdsterraLink = function() {
         const link = (appSettings.ads && appSettings.ads.adsterraDirectLink) || '';
         adPopupBtn.disabled = true;
-        const adWindow = window.open(link, '_blank');
-        if (!adWindow) return alert('Please allow popups');
+        
+        // অ্যাড লিংক ওপেন করা
+        window.open(link, '_blank');
 
-        adWindowOpened = true; adSecondsElapsed = 0;
+        adTaskActive = true; adSecondsElapsed = 0;
         adTimerDisplay.style.display = 'block'; adProgressBar.style.display = 'block';
         let remaining = AD_REQUIRED_SECONDS;
-        
+        adTimerDisplay.textContent = remaining;
+
+        if (adTimerInterval) clearInterval(adTimerInterval);
+
         adTimerInterval = setInterval(function() {
             remaining--; adSecondsElapsed++;
             if (remaining > 0) {
@@ -1802,10 +1822,32 @@
                 adProgressFill.style.width = (((AD_REQUIRED_SECONDS - remaining) / AD_REQUIRED_SECONDS) * 100) + '%';
             } else {
                 clearInterval(adTimerInterval);
+                adTaskActive = false;
                 completeAdUnlock();
             }
         }, 1000);
     };
+
+    // ট্যাব পরিবর্তন বা ব্যাক করার ডিটেকশন (১০ সেকেন্ডের আগে আসলে ফেইল ধরা হবে)
+    document.addEventListener("visibilitychange", function() {
+        if (document.hidden && adTaskActive) {
+            // ইউজার ট্যাব থেকে দূরে গেছে (অ্যাড লিংকে গেছে)
+        } else if (!document.hidden && adTaskActive) {
+            // ইউজার ১০ সেকেন্ডের আগেই ব্যাক করে এসেছে!
+            if (adSecondsElapsed < AD_REQUIRED_SECONDS) {
+                clearInterval(adTimerInterval);
+                adTaskActive = false;
+                
+                // পপআপে ওয়ার্নিং দেখানো
+                adWarning.classList.add('show');
+                adWarning.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ১০ সেকেন্ডের আগে ব্যাক করায় এই স্টেপ অসম্পূর্ণ হয়েছে। আবার চেষ্টা করুন!';
+                adTimerDisplay.style.display = 'none';
+                adProgressBar.style.display = 'none';
+                adPopupBtn.disabled = false;
+                adPopupBtn.innerHTML = '<i class="fas fa-redo mr-2"></i> Try Again';
+            }
+        }
+    });
 
     async function completeAdUnlock() {
         if (!pendingAdFileId) return;
@@ -1816,10 +1858,12 @@
         } else {
             localStorage.setItem('ad_' + pendingAdFileId, newCount);
         }
-        closeAdPopup(); handleRoute();
+        closeAdPopup(); 
+        handleRoute();
     }
 
     window.closeAdPopup = function() {
+        adTaskActive = false;
         adPopup.classList.remove('active');
         if (adTimerInterval) clearInterval(adTimerInterval);
     };
@@ -1833,7 +1877,6 @@
         if (isHome) bannerInterval = interval; else detailInterval = interval;
     }
 
-    /* ==================== নতুন রি-ডিজাইন করা প্রোফাইল পেজ ==================== */
     function renderProfile() {
         document.title = "Profile - FileHub";
         if (!currentUser) { showAuthModal(); return; }

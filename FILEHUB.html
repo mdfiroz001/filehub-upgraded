@@ -146,6 +146,7 @@
             gap: 8px;
         }
         
+        /* ড্যাশবোর্ড কার্ড স্টাইল */
         .stat-card-pro {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -353,6 +354,7 @@
     <div id="login-section" class="min-h-screen flex items-center justify-center p-4">
         <div class="card max-w-md w-full" style="box-shadow: 0 20px 40px rgba(0,0,0,0.06);">
             <div class="text-center mb-6">
+                <!-- স্বয়ংক্রিয় ব্যাকআপ সহ লোগো -->
                 <img id="login-logo-img" src="https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png" 
                      onerror="this.onerror=null;this.src='https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';"
                      alt="FileHub" class="w-20 h-20 rounded-2xl mx-auto mb-4 object-cover shadow-md border-2 border-indigo-500">
@@ -381,6 +383,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
+                <!-- সাইডবার লোগো -->
                 <img id="sidebar-logo-img" src="https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png" 
                      onerror="this.onerror=null;this.src='https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png';"
                      alt="FileHub" class="sidebar-logo">
@@ -496,6 +499,7 @@
 
     const DEFAULT_LOGO = "https://i.postimg.cc/VkCqsjD1/file-00000000fa18821191576f156d4e3bfe.png";
 
+    // লোগো ডাইনামিক আপডেট মেথড
     function updateAdminBranding(logoUrl, name) {
         const targetLogo = logoUrl && logoUrl.trim() !== '' ? logoUrl : DEFAULT_LOGO;
         const brandName = name && name.trim() !== '' ? name : 'FileHub';
@@ -525,12 +529,14 @@
                     showAlert('login-alert', 'You are not authorized as admin.', 'error');
                 }
             } catch (error) {
+                console.error("Admin check error:", error);
                 auth.signOut();
                 showLogin();
                 showAlert('login-alert', 'Authentication error: ' + error.message, 'error');
             }
         } else {
             showLogin();
+            // সেটিংস থেকে প্রি-লোড লোগো
             settingsRef.child('app').once('value').then(snap => {
                 const s = snap.val() || {};
                 updateAdminBranding(s.logoUrl, s.appName);
@@ -707,7 +713,7 @@
         return baseSlug + '-' + Date.now().toString().slice(-5);
     }
 
-    // ==================== DASHBOARD ====================
+    // ==================== সুন্দর ড্যাশবোর্ড ডিজাইন ====================
     function renderDashboard() {
         const pendingFilesCount = allFiles.filter(function(f) { return f.status === 'pending'; }).length;
         const approvedFilesCount = allFiles.filter(function(f) { return f.status === 'approved'; }).length;
@@ -758,6 +764,44 @@
                         '<div class="text-xs text-purple-500 mt-2 font-medium"><i class="fas fa-sparkles mr-1"></i>Image Generators</div>' +
                     '</div>' +
                     '<div class="stat-icon-wrap bg-purple-50 text-purple-600"><i class="fas fa-wand-magic-sparkles"></i></div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">' +
+                '<div class="card">' +
+                    '<div class="flex justify-between items-center mb-4">' +
+                        '<h3 class="card-title mb-0"><i class="fas fa-file-lines text-indigo-500"></i> Recent Files</h3>' +
+                        '<button class="text-xs font-bold text-indigo-600 hover:underline" onclick="loadPage(\'files\')">View All</button>' +
+                    '</div>' +
+                    '<div class="overflow-x-auto"><table class="data-table">' +
+                    '<thead><tr><th>Title</th><th>Status</th><th>Downloads</th></tr></thead><tbody>' +
+                    allFiles.slice(0, 6).map(function(file) {
+                        return '<tr>' +
+                            '<td class="font-medium max-w-[180px] truncate"><a href="' + file.download_url + '" target="_blank" class="hover:text-indigo-600">' + esc(file.title || 'Untitled') + '</a></td>' +
+                            '<td><span class="status-badge status-' + (file.status || 'pending') + '">' + (file.status || 'pending') + '</span></td>' +
+                            '<td class="font-semibold">' + (file.total_downloads || 0) + '</td>' +
+                        '</tr>';
+                    }).join('') +
+                    (allFiles.length === 0 ? '<tr><td colspan="3" class="text-center text-gray-400 py-6">No files uploaded yet</td></tr>' : '') +
+                    '</tbody></table></div>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<div class="flex justify-between items-center mb-4">' +
+                        '<h3 class="card-title mb-0"><i class="fas fa-user-clock text-indigo-500"></i> Recent Users</h3>' +
+                        '<button class="text-xs font-bold text-indigo-600 hover:underline" onclick="loadPage(\'users\')">View All</button>' +
+                    '</div>' +
+                    '<div class="overflow-x-auto"><table class="data-table">' +
+                    '<thead><tr><th>UID</th><th>Username</th><th>Account</th></tr></thead><tbody>' +
+                    allUsers.slice(0, 6).map(function(user) {
+                        return '<tr>' +
+                            '<td class="font-mono text-xs text-gray-500">' + (user.numericId || user.id.substring(0,8)) + '</td>' +
+                            '<td class="font-medium">' + esc(user.username || 'Anonymous') + '</td>' +
+                            '<td><span class="status-badge ' + (user.isAccountActive !== false ? 'status-active' : 'status-inactive') + '">' + (user.isAccountActive !== false ? 'Active' : 'Suspended') + '</span></td>' +
+                        '</tr>';
+                    }).join('') +
+                    (allUsers.length === 0 ? '<tr><td colspan="3" class="text-center text-gray-400 py-6">No registered users</td></tr>' : '') +
+                    '</tbody></table></div>' +
                 '</div>' +
             '</div>';
     }
@@ -830,6 +874,7 @@
                 '<h1 class="text-3xl font-bold font-[\'Outfit\']">Sliders & Banners</h1>' +
                 '<button class="btn btn-primary" onclick="openBannerForm()"><i class="fas fa-plus mr-2"></i> Add Slider</button>' +
             '</div>' +
+            '<div class="info-badge"><i class="fas fa-info-circle"></i><span>ব্যানার আনলিমিটেড। শুধু ছবি + লিংক।</span></div>' +
             '<div class="card"><div class="overflow-x-auto">' +
                 '<table class="data-table"><thead><tr><th>Thumbnail</th><th>Title</th><th>Target Link</th><th>Actions</th></tr></thead>' +
                 '<tbody>' + rows + '</tbody></table>' +
@@ -849,85 +894,476 @@
             rows += '<tr>' +
                 '<td>' + (p.sample_image ? '<img src="' + esc(p.sample_image) + '" class="prompt-thumb" onerror="this.style.display=\'none\'">' : '<span style="color:var(--text-sub);font-size:0.8rem;">No image</span>') + '</td>' +
                 '<td class="font-medium">' + esc(p.title || 'Untitled') + '</td>' +
-                '<td class="prompt-text-cell max-w-xs truncate">' + esc((p.prompt || '').substring(0, 100)) + '</td>' +
-                '<td><span class="step-badge ' + (reqAds === 0 ? 'step-zero' : '') + '">' + reqAds + '</span></td>' +
-                '<td>' + (p.detail_photos && p.detail_photos.length ? p.detail_photos.length + ' 📷' : '—') + '</td>' +
+                '<td class="prompt-text-cell">' + esc((p.prompt || '').substring(0, 100)) + (p.prompt && p.prompt.length > 100 ? '...' : '') + '</td>' +
+                '<td><span class="step-badge ' + (reqAds === 0 ? 'step-zero' : '') + '"><i class="fas fa-play-circle" style="font-size:0.6rem;"></i> ' + reqAds + '</span></td>' +
+                '<td>' + (p.detail_photos && p.detail_photos.length ? '<span style="color:var(--primary);font-weight:700;font-size:0.8rem;">' + p.detail_photos.length + ' 📷</span>' : '<span style="color:var(--text-sub);font-size:0.75rem;">—</span>') + '</td>' +
                 '<td><div class="flex gap-1 flex-wrap">' +
                     '<button class="btn btn-primary btn-sm" onclick="copyPromptAdmin(' + i + ')" title="Copy"><i class="fas fa-copy"></i></button>' +
                     '<button class="btn btn-warning btn-sm" onclick="openPromptForm(' + i + ')" title="Edit"><i class="fas fa-edit"></i></button>' +
                     '<button class="btn btn-danger btn-sm" onclick="deletePrompt(' + i + ')" title="Delete"><i class="fas fa-trash"></i></button>' +
                 '</div></td></tr>';
         });
+        if (prompts.length === 0) rows = '<tr><td colspan="6" class="text-center text-gray-500 py-8">No prompts yet. Click "Add New Prompt".</td></tr>';
 
         document.getElementById('page-content').innerHTML = 
             '<div class="flex justify-between items-center mb-6">' +
-                '<h1 class="text-3xl font-bold font-[\'Outfit\']">AI Image Prompts</h1>' +
-                '<button class="btn btn-primary" onclick="openPromptForm()"><i class="fas fa-plus mr-2"></i> Add New Prompt</button>' +
+                '<h1 class="text-3xl font-bold font-[\'Outfit\']"><i class="fas fa-magic text-indigo-500 mr-2"></i> AI Image Prompts</h1>' +
             '</div>' +
+            '<div class="info-badge"><i class="fas fa-lightbulb"></i><span>প্রতিটি প্রমোটে আলাদা Steps সেট করা যাবে। Detail Images দিলে স্লাইডার দেখাবে।</span></div>' +
             '<div class="card mb-6"><h3 class="card-title">⚙️ General Settings</h3>' +
+                '<div id="ai-prompt-alert" class="alert hidden"></div>' +
                 '<form id="ai-prompt-settings-form">' +
                     '<div class="form-group flex items-center mb-4">' +
                         '<input type="checkbox" id="ai-prompt-enabled" class="mr-3 w-5 h-5" ' + (isEnabled ? 'checked' : '') + '>' +
                         '<label class="form-label mb-0 cursor-pointer" for="ai-prompt-enabled">Enable AI Prompts</label>' +
                     '</div>' +
-                    '<div class="form-group"><label class="form-label">Gemini AI URL</label><input type="url" id="ai-prompt-gemini-url" class="form-input" value="' + esc(geminiUrl) + '"></div>' +
-                    '<button type="submit" class="btn btn-primary">Save Settings</button>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">Gemini AI URL</label>' +
+                        '<input type="url" id="ai-prompt-gemini-url" class="form-input" value="' + esc(geminiUrl) + '">' +
+                    '</div>' +
+                    '<button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> Save Settings</button>' +
                 '</form>' +
             '</div>' +
-            '<div class="card"><div class="overflow-x-auto"><table class="data-table w-full">' +
-            '<thead><tr><th>Preview</th><th>Title</th><th>Prompt</th><th>Steps</th><th>Detail</th><th>Actions</th></tr></thead>' +
-            '<tbody>' + (rows || '<tr><td colspan="6" class="text-center py-6">No prompts found</td></tr>') + '</tbody></table></div></div>';
+            '<div class="card">' +
+                '<div class="flex justify-between items-center mb-4">' +
+                    '<h3 class="card-title mb-0">📝 Prompt Library (' + prompts.length + ')</h3>' +
+                    '<button class="btn btn-primary" onclick="openPromptForm()"><i class="fas fa-plus mr-2"></i> Add New Prompt</button>' +
+                '</div>' +
+                '<div class="overflow-x-auto"><table class="data-table w-full">' +
+                '<thead><tr><th>Preview</th><th>Title</th><th>Prompt</th><th>Steps</th><th>Detail</th><th>Actions</th></tr></thead>' +
+                '<tbody>' + rows + '</tbody></table></div>' +
+            '</div>';
 
-        document.getElementById('ai-prompt-settings-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        document.getElementById('ai-prompt-settings-form').addEventListener('submit', saveAIPromptSettings);
+    }
+
+    async function saveAIPromptSettings(e) {
+        e.preventDefault();
+        const imgSettings = appSettings.aiImage || {};
+        try {
             await settingsRef.child('aiImage').update({
                 enabled: document.getElementById('ai-prompt-enabled').checked,
-                geminiUrl: document.getElementById('ai-prompt-gemini-url').value.trim() || 'https://gemini.google.com/app'
+                geminiUrl: document.getElementById('ai-prompt-gemini-url').value.trim() || 'https://gemini.google.com/app',
+                prompts: imgSettings.prompts || []
             });
-            alert('Settings saved!'); await loadData();
+            showAlert('ai-prompt-alert', '✅ Settings saved!', 'success');
+            await loadData();
+        } catch (error) { showAlert('ai-prompt-alert', error.message, 'error'); }
+    }
+
+    function openPromptForm(index) {
+        const imgSettings = appSettings.aiImage || {};
+        const prompts = imgSettings.prompts || [];
+        const prompt = (index !== null && index !== undefined) ? prompts[index] : {};
+        const detailPhotosStr = (prompt.detail_photos || []).join('\n');
+        const isEdit = (index !== null && index !== undefined);
+
+        document.getElementById('modal-title').textContent = isEdit ? '✏️ Edit Prompt' : '➕ Add New Prompt';
+
+        const sampleImagePreview = prompt.sample_image ? '<img src="' + esc(prompt.sample_image) + '" style="max-width:100%;max-height:180px;border-radius:10px;border:1px solid var(--border);">' : '';
+        const detailPreview = (prompt.detail_photos || []).map(function(u) {
+            return '<img src="' + esc(u) + '" onerror="this.style.display=\'none\'" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">';
+        }).join('');
+
+        document.getElementById('modal-form').innerHTML = 
+            '<div class="form-group">' +
+                '<label class="form-label">Prompt Title <span style="color:var(--red);">*</span></label>' +
+                '<input type="text" id="prompt-title" class="form-input" value="' + esc(prompt.title || '') + '" placeholder="e.g., Realistic Portrait" required>' +
+            '</div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Prompt Text <span style="color:var(--red);">*</span></label>' +
+                '<textarea id="prompt-text" class="form-textarea" rows="5" placeholder="A photorealistic portrait..." required style="font-family:monospace;font-size:0.85rem;">' + esc(prompt.prompt || '') + '</textarea>' +
+            '</div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Required Steps (Ads) <span style="color:var(--red);">*</span></label>' +
+                '<input type="number" id="prompt-required-ads" class="form-input" value="' + (parseInt(prompt.required_ads) || 0) + '" min="0">' +
+                '<p style="font-size:0.75rem;color:var(--text-sub);margin-top:5px;">💡 0 দিলে ফ্রি, 1+ দিলে ঐ পরিমাণ Ads দেখতে হবে।</p>' +
+            '</div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Sample Image URL</label>' +
+                '<input type="url" id="prompt-sample-image" class="form-input" value="' + esc(prompt.sample_image || '') + '" oninput="previewSampleImage()">' +
+                '<div id="sample-image-preview" style="margin-top:10px;">' + sampleImagePreview + '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Detail Images (প্রতি লাইনে একটি URL)</label>' +
+                '<textarea id="prompt-detail-photos" class="form-textarea" rows="4" oninput="previewDetailPhotos()" style="font-family:monospace;font-size:0.82rem;">' + esc(detailPhotosStr) + '</textarea>' +
+                '<div id="detail-photos-preview" class="flex gap-2 flex-wrap mt-2">' + detailPreview + '</div>' +
+            '</div>' +
+            '<div class="flex justify-end gap-3 mt-4">' +
+                '<button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>' +
+                '<button type="submit" class="btn btn-success" id="save-prompt-btn"><i class="fas fa-save mr-2"></i> Save Prompt</button>' +
+            '</div>';
+
+        document.getElementById('modal-form').onsubmit = function(e) { savePrompt(e, index); };
+        openModal();
+    }
+
+    window.previewSampleImage = function() {
+        const url = document.getElementById('prompt-sample-image').value.trim();
+        const preview = document.getElementById('sample-image-preview');
+        if (!url) { preview.innerHTML = ''; return; }
+        preview.innerHTML = '<img src="' + esc(url) + '" style="max-width:100%;max-height:180px;border-radius:10px;border:1px solid var(--border);" onerror="this.style.display=\'none\'">';
+    };
+
+    window.previewDetailPhotos = function() {
+        const text = document.getElementById('prompt-detail-photos').value.trim();
+        const preview = document.getElementById('detail-photos-preview');
+        if (!text) { preview.innerHTML = ''; return; }
+        const urls = text.split('\n').map(function(u) { return u.trim(); }).filter(function(u) { return u; });
+        preview.innerHTML = urls.map(function(u) {
+            return '<img src="' + esc(u) + '" onerror="this.style.display=\'none\'" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">';
+        }).join('');
+    };
+
+    async function savePrompt(e, index) {
+        e.preventDefault();
+        const btn = document.getElementById('save-prompt-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+        const title = document.getElementById('prompt-title').value.trim();
+        const promptText = document.getElementById('prompt-text').value.trim();
+        const requiredAds = parseInt(document.getElementById('prompt-required-ads').value) || 0;
+        const sampleImage = document.getElementById('prompt-sample-image').value.trim();
+        const detailPhotosText = document.getElementById('prompt-detail-photos').value.trim();
+        const detailPhotos = detailPhotosText.split('\n').map(function(u) { return u.trim(); }).filter(function(u) { return u; });
+
+        if (!title || !promptText) {
+            showAlert('modal-alert', 'Fill required fields', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Prompt';
+            return;
+        }
+
+        try {
+            const imgSettings = appSettings.aiImage || {};
+            let prompts = (imgSettings.prompts || []).slice();
+            const isEdit = (index !== null && index !== undefined);
+            const newPrompt = {
+                title: title,
+                prompt: promptText,
+                required_ads: requiredAds,
+                sample_image: sampleImage,
+                detail_photos: detailPhotos,
+                created_at: (isEdit && prompts[index]) ? (prompts[index].created_at || Date.now()) : Date.now()
+            };
+            if (isEdit) prompts[index] = newPrompt;
+            else prompts.push(newPrompt);
+
+            await settingsRef.child('aiImage').child('prompts').set(prompts);
+            showAlert('modal-alert', '✅ Prompt saved!', 'success');
+            setTimeout(function() { closeModal(); loadData(); }, 800);
+        } catch (error) {
+            showAlert('modal-alert', error.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Prompt';
+        }
+    }
+
+    window.copyPromptAdmin = function(index) {
+        const imgSettings = appSettings.aiImage || {};
+        const prompts = imgSettings.prompts || [];
+        if (!prompts[index]) return;
+        navigator.clipboard.writeText(prompts[index].prompt).then(function() {
+            alert('✅ Prompt copied!');
+        }).catch(function() {
+            const temp = document.createElement('textarea');
+            temp.value = prompts[index].prompt;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            alert('✅ Copied!');
+        });
+    };
+
+    window.deletePrompt = function(index) {
+        openConfirmModal('Delete this prompt permanently?', async function() {
+            const imgSettings = appSettings.aiImage || {};
+            let prompts = (imgSettings.prompts || []).slice();
+            prompts.splice(index, 1);
+            await settingsRef.child('aiImage').child('prompts').set(prompts);
+            await loadData();
+        });
+    };
+
+    // ==================== ADMIN INFO ====================
+    function renderAdminInfo() {
+        const adminSettings = appSettings.admin || {};
+        const adminName = adminSettings.name || 'FILE HUB এডমিন';
+        const adminBio = adminSettings.bio || '';
+        const social = adminSettings.social || {};
+
+        document.getElementById('page-content').innerHTML = 
+            '<div class="flex justify-between items-center mb-6">' +
+                '<h1 class="text-3xl font-bold font-[\'Outfit\']"><i class="fas fa-user-shield text-indigo-500 mr-2"></i> Admin Info</h1>' +
+            '</div>' +
+            '<div class="info-badge">' +
+                '<i class="fas fa-info-circle"></i>' +
+                '<span>এই তথ্যগুলো AI Chat এ ব্যবহার হবে। ইউজার যখন এডমিন সম্পর্কে জিজ্ঞেস করবে, AI এই তথ্য দেবে।</span>' +
+            '</div>' +
+
+            '<div class="card mb-6">' +
+                '<h3 class="card-title">👤 Admin Basic Info</h3>' +
+                '<div id="admin-info-alert" class="alert hidden"></div>' +
+                '<form id="admin-info-form">' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">Admin Display Name</label>' +
+                        '<input type="text" id="admin-name" class="form-input" value="' + esc(adminName) + '" placeholder="e.g., FILE HUB এডমিন" required>' +
+                        '<p style="font-size:0.75rem;color:var(--text-sub);margin-top:5px;">AI এই নামটি ইউজারকে বলবে।</p>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">About Admin (Optional)</label>' +
+                        '<textarea id="admin-bio" class="form-textarea" rows="4" placeholder="Write something about the admin...">' + esc(adminBio) + '</textarea>' +
+                    '</div>' +
+                    '<button type="submit" class="btn btn-primary">' +
+                        '<i class="fas fa-save mr-2"></i> Save Admin Info' +
+                    '</button>' +
+                '</form>' +
+            '</div>' +
+
+            '<div class="card">' +
+                '<h3 class="card-title">🌐 Social Media Links</h3>' +
+                '<div id="admin-social-alert" class="alert hidden"></div>' +
+                '<form id="admin-social-form">' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">📱 Telegram</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box telegram"><i class="fab fa-telegram-plane"></i></div>' +
+                            '<input type="url" id="social-telegram" value="' + esc(social.telegram || '') + '" placeholder="https://t.me/username">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">📘 Facebook</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box facebook"><i class="fab fa-facebook-f"></i></div>' +
+                            '<input type="url" id="social-facebook" value="' + esc(social.facebook || '') + '" placeholder="https://facebook.com/yourpage">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">📺 YouTube</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box youtube"><i class="fab fa-youtube"></i></div>' +
+                            '<input type="url" id="social-youtube" value="' + esc(social.youtube || '') + '" placeholder="https://youtube.com/@yourchannel">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">💬 WhatsApp</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box whatsapp"><i class="fab fa-whatsapp"></i></div>' +
+                            '<input type="url" id="social-whatsapp" value="' + esc(social.whatsapp || '') + '" placeholder="https://wa.me/8801234567890">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">📸 Instagram</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box instagram"><i class="fab fa-instagram"></i></div>' +
+                            '<input type="url" id="social-instagram" value="' + esc(social.instagram || '') + '" placeholder="https://instagram.com/yourpage">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">🐦 Twitter / X</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box twitter"><i class="fab fa-twitter"></i></div>' +
+                            '<input type="url" id="social-twitter" value="' + esc(social.twitter || '') + '" placeholder="https://twitter.com/yourhandle">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">📧 Email</label>' +
+                        '<div class="social-input-row">' +
+                            '<div class="icon-box email"><i class="fas fa-envelope"></i></div>' +
+                            '<input type="email" id="social-email" value="' + esc(social.email || '') + '" placeholder="admin@filehub.com">' +
+                        '</div>' +
+                    '</div>' +
+                    '<button type="submit" class="btn btn-primary">' +
+                        '<i class="fas fa-save mr-2"></i> Save Social Media' +
+                    '</button>' +
+                '</form>' +
+            '</div>';
+
+        document.getElementById('admin-info-form').addEventListener('submit', saveAdminInfo);
+        document.getElementById('admin-social-form').addEventListener('submit', saveAdminSocial);
+    }
+
+    async function saveAdminInfo(e) {
+        e.preventDefault();
+        try {
+            await settingsRef.child('admin').update({
+                name: document.getElementById('admin-name').value.trim() || 'FILE HUB এডমিন',
+                bio: document.getElementById('admin-bio').value.trim()
+            });
+            showAlert('admin-info-alert', '✅ Admin info saved!', 'success');
+            await loadData();
+        } catch (error) { showAlert('admin-info-alert', error.message, 'error'); }
+    }
+
+    async function saveAdminSocial(e) {
+        e.preventDefault();
+        try {
+            await settingsRef.child('admin').child('social').update({
+                telegram: document.getElementById('social-telegram').value.trim(),
+                facebook: document.getElementById('social-facebook').value.trim(),
+                youtube: document.getElementById('social-youtube').value.trim(),
+                whatsapp: document.getElementById('social-whatsapp').value.trim(),
+                instagram: document.getElementById('social-instagram').value.trim(),
+                twitter: document.getElementById('social-twitter').value.trim(),
+                email: document.getElementById('social-email').value.trim()
+            });
+            showAlert('admin-social-alert', '✅ Social media links saved!', 'success');
+            await loadData();
+        } catch (error) { showAlert('admin-social-alert', error.message, 'error'); }
+    }
+
+    // ==================== USERS ====================
+    function renderUsers() {
+        document.getElementById('page-content').innerHTML = 
+            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Users Management</h1>' +
+            '<div class="card"><div class="mb-4"><input type="text" id="user-search" class="form-input" placeholder="Search by name, username, email or ID..."></div>' +
+            '<div class="overflow-x-auto"><table class="data-table w-full">' +
+            '<thead><tr><th>User ID</th><th>Username</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>' +
+            '<tbody id="users-table">' + generateUsersTableHTML(allUsers) + '</tbody></table></div></div>';
+
+        const searchInput = document.getElementById('user-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const s = e.target.value.toLowerCase();
+                const filtered = allUsers.filter(function(u) {
+                    return (u.email && u.email.toLowerCase().indexOf(s) !== -1) ||
+                           (u.username && u.username.toLowerCase().indexOf(s) !== -1) ||
+                           (u.numericId && u.numericId.indexOf(s) !== -1) ||
+                           (u.fullname && u.fullname.toLowerCase().indexOf(s) !== -1);
+                });
+                document.getElementById('users-table').innerHTML = generateUsersTableHTML(filtered);
+            });
+        }
+    }
+
+    function generateUsersTableHTML(users) {
+        if (users.length === 0) return '<tr><td colspan="5" class="text-center text-gray-500 py-8">No users found</td></tr>';
+        let html = '';
+        users.forEach(function(user) {
+            html += '<tr>' +
+                '<td class="font-mono text-sm">' + (user.numericId || user.id.substring(0,10)) + '</td>' +
+                '<td class="font-medium">' + esc(user.username || 'N/A') + '</td>' +
+                '<td>' + esc(user.email || 'N/A') + '</td>' +
+                '<td><span class="status-badge ' + (user.isAccountActive !== false ? 'status-active' : 'status-inactive') + '">' + (user.isAccountActive !== false ? 'Active' : 'Banned') + '</span></td>' +
+                '<td class="flex gap-1">' +
+                    '<button class="btn ' + (user.isAccountActive !== false ? 'btn-danger' : 'btn-success') + ' btn-sm" onclick="toggleUserBan(\'' + user.id + '\', ' + (user.isAccountActive !== false) + ')"><i class="fas ' + (user.isAccountActive !== false ? 'fa-ban' : 'fa-check') + '"></i></button>' +
+                    '<button class="btn btn-warning btn-sm" onclick="editUser(\'' + user.id + '\')"><i class="fas fa-edit"></i></button>' +
+                '</td></tr>';
+        });
+        return html;
+    }
+
+    async function toggleUserBan(userId, currentStatus) {
+        openConfirmModal('Are you sure you want to ' + (currentStatus ? 'BAN' : 'UNBAN') + ' this user?', async function() {
+            await usersRef.child(userId).update({ isAccountActive: !currentStatus });
+            await loadData();
         });
     }
 
-    // ==================== SITE CUSTOMIZATION (WELCOME BANNER IMAGE SUPPORT) ====================
+    // ==================== NOTIFICATIONS ====================
+    function renderNotifications() {
+        document.getElementById('page-content').innerHTML = 
+            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Push Notifications</h1>' +
+            '<div class="card mb-6"><h3 class="card-title">Send Broadcast or User Notice</h3>' +
+            '<div id="notif-alert" class="alert hidden"></div>' +
+            '<form id="notification-form">' +
+                '<div class="form-group"><label class="form-label">Target UID (খালি রাখলে সবাই পাবে)</label><input type="text" id="notif-target" class="form-input" placeholder="all or user UID"></div>' +
+                '<div class="form-group"><label class="form-label">Title</label><input type="text" id="notif-title" class="form-input" placeholder="Notice heading..." required></div>' +
+                '<div class="form-group"><label class="form-label">Message (Markdown Supported)</label><textarea id="notif-message" class="form-textarea" rows="4" placeholder="Full notice description..." required></textarea></div>' +
+                '<button type="submit" class="btn btn-primary" id="send-notif-btn"><i class="fas fa-paper-plane mr-2"></i> Send Notification</button>' +
+            '</form></div>' +
+            '<div class="card"><h3 class="card-title">Recent Sent Notices</h3><div class="overflow-x-auto">' +
+            '<table class="data-table w-full"><thead><tr><th>Title</th><th>Target</th><th>Date</th><th></th></tr></thead>' +
+            '<tbody id="notifications-list"><tr><td colspan="4" class="text-center">Loading...</td></tr></tbody></table></div></div>';
+
+        loadRecentNotifications();
+        document.getElementById('notification-form').addEventListener('submit', sendNotification);
+    }
+
+    async function loadRecentNotifications() {
+        try {
+            const snap = await notificationsRef.orderByChild('created_at').limitToLast(20).once('value');
+            const notifications = snap.val() ? Object.entries(snap.val()).map(function(e) { return Object.assign({ id: e[0] }, e[1]); }).sort(function(a, b) { return (b.created_at || 0) - (a.created_at || 0); }) : [];
+            const list = document.getElementById('notifications-list');
+            if (!list) return;
+            if (notifications.length === 0) {
+                list.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-4">No notifications sent yet</td></tr>';
+                return;
+            }
+            let html = '';
+            notifications.forEach(function(n) {
+                html += '<tr>' +
+                    '<td class="max-w-[200px] truncate font-medium">' + esc(n.title || 'Untitled') + '</td>' +
+                    '<td>' + (n.target_uid === 'all' || !n.target_uid ? '<span class="status-badge status-active">All Users</span>' : '<span class="status-badge status-pending">' + n.target_uid.substring(0,8) + '...</span>') + '</td>' +
+                    '<td>' + (n.created_at ? new Date(n.created_at).toLocaleDateString() : 'N/A') + '</td>' +
+                    '<td><button class="btn btn-danger btn-sm" onclick="deleteNotification(\'' + n.id + '\')"><i class="fas fa-trash"></i></button></td>' +
+                    '</tr>';
+            });
+            list.innerHTML = html;
+        } catch (error) {
+            console.error(error);
+            const list = document.getElementById('notifications-list');
+            if (list) list.innerHTML = '<tr><td colspan="4" class="text-center text-red-500 py-4">Error loading data</td></tr>';
+        }
+    }
+
+    function deleteNotification(id) {
+        openConfirmModal('Delete this notification permanently?', async function() {
+            await notificationsRef.child(id).remove();
+            loadRecentNotifications();
+        });
+    }
+
+    async function sendNotification(e) {
+        e.preventDefault();
+        const sendBtn = document.getElementById('send-notif-btn');
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+        const targetUid = document.getElementById('notif-target').value.trim();
+        try {
+            await notificationsRef.push({
+                title: document.getElementById('notif-title').value,
+                decs: document.getElementById('notif-message').value,
+                created_at: Date.now(),
+                is_read: false,
+                target_uid: targetUid || 'all'
+            });
+            showAlert('notif-alert', 'Notification sent successfully!', 'success');
+            document.getElementById('notification-form').reset();
+            loadRecentNotifications();
+        } catch (error) { showAlert('notif-alert', error.message, 'error'); }
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Send Notification';
+    }
+
+    // ==================== SETTINGS ====================
     function renderSettings() {
         const s = appSettings.app || {}, w = appSettings.welcome || {};
-        const welcomeImg = w.imageUrl || '';
-
         document.getElementById('page-content').innerHTML = 
             '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Site Customization</h1>' +
+            '<div class="info-badge"><i class="fas fa-sliders"></i><span>এখান থেকেই মূল ওয়েবসাইটের নাম, লোগো, রঙ এবং নোটিশ কন্ট্রোল করুন।</span></div>' +
             '<div class="card">' +
                 '<h3 class="card-title">🎨 Brand & Appearance</h3>' +
                 '<div id="app-settings-alert" class="alert hidden"></div>' +
                 '<form id="app-settings-form">' +
                     '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
                         '<div class="form-group"><label class="form-label">Website Name</label><input id="app-name" class="form-input" value="' + esc(s.appName || 'FileHub') + '"></div>' +
-                        '<div class="form-group"><label class="form-label">Logo URL</label><input id="app-logo" type="url" class="form-input" value="' + esc(s.logoUrl || '') + '" placeholder="https://..."></div>' +
+                        '<div class="form-group"><label class="form-label">Logo URL</label><input id="app-logo" type="url" class="form-input" value="' + esc(s.logoUrl || '') + '" placeholder="https://i.postimg.cc/..."></div>' +
                         '<div class="form-group"><label class="form-label">Primary Color</label><input id="app-primary" type="color" class="form-input" value="' + esc(s.primaryColor || '#4f46e5') + '" style="height:45px;padding:4px"></div>' +
                         '<div class="form-group"><label class="form-label">Accent Color</label><input id="app-accent" type="color" class="form-input" value="' + esc(s.accentColor || '#818cf8') + '" style="height:45px;padding:4px"></div>' +
                     '</div>' +
-                    '<div class="form-group"><label class="form-label">Scrolling Notice</label><input id="scrolling-notice" class="form-input" value="' + esc(s.scrollingNotice || '') + '"></div>' +
+                    '<div class="form-group"><label class="form-label">Scrolling Notice</label><input id="scrolling-notice" class="form-input" value="' + esc(s.scrollingNotice || '') + '" placeholder="নতুন আপডেটের খবর..."></div>' +
                     '<button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> Save Appearance</button>' +
                 '</form>' +
             '</div>' +
-
             '<div class="card">' +
-                '<h3 class="card-title">👋 Welcome Popup (Image & Texts)</h3>' +
-                '<div id="welcome-settings-alert" class="alert hidden"></div>' +
+                '<h3 class="card-title">👋 Welcome Popup</h3>' +
                 '<form id="welcome-settings-form">' +
                     '<label class="form-label mb-3 cursor-pointer flex items-center gap-2"><input type="checkbox" id="welcome-enabled" class="w-4 h-4" ' + (w.enabled !== false ? 'checked' : '') + '> Show popup on first visit</label>' +
-                    
-                    '<!-- ওয়েলকাম ইমেজ আপলোড ও লাইভ প্রিভিউ -->' +
-                    '<div class="form-group">' +
-                        '<label class="form-label">🖼️ Welcome Banner Image URL (Optional)</label>' +
-                        '<input id="welcome-image-url" type="url" class="form-input" value="' + esc(welcomeImg) + '" placeholder="https://i.postimg.cc/..." oninput="previewWelcomeImg()">' +
-                        '<p class="text-xs text-gray-500 mt-1">ইমেজের লিঙ্ক দিলে পপ-আপের উপরে বড় আকর্ষণীয় ব্যানার দেখাবে।</p>' +
-                        '<div id="welcome-img-preview" class="mt-3">' + 
-                            (welcomeImg ? '<img src="' + esc(welcomeImg) + '" class="max-h-40 rounded-xl border border-gray-200 object-cover">' : '') + 
-                        '</div>' +
-                    '</div>' +
-
-                    '<div class="form-group"><label class="form-label">Title</label><input id="welcome-title" class="form-input" value="' + esc(w.title || 'Welcome to FileHub') + '"></div>' +
-                    '<div class="form-group"><label class="form-label">Message</label><textarea id="welcome-message" class="form-textarea" rows="4">' + esc(w.message || 'FileHub-এ আপনাকে স্বাগতম।') + '</textarea></div>' +
+                    '<div class="form-group"><label class="form-label">Title</label><input id="welcome-title" class="form-input" value="' + esc(w.title || 'স্বাগতম!') + '"></div>' +
+                    '<div class="form-group"><label class="form-label">Message</label><textarea id="welcome-message" class="form-textarea" rows="4">' + esc(w.message || 'FileHub-এ আপনাকে স্বাগতম। আপনার পছন্দের ফাইল ও AI prompt খুঁজে নিন।') + '</textarea></div>' +
                     '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
                         '<div class="form-group"><label class="form-label">Button Text</label><input id="welcome-button" class="form-input" value="' + esc(w.buttonText || 'Explore now') + '"></div>' +
                         '<div class="form-group"><label class="form-label">Button URL (optional)</label><input id="welcome-url" type="url" class="form-input" value="' + esc(w.buttonUrl || '') + '"></div>' +
@@ -939,13 +1375,6 @@
         document.getElementById('app-settings-form').onsubmit = saveAppSettings;
         document.getElementById('welcome-settings-form').onsubmit = saveWelcomeSettings;
     }
-
-    window.previewWelcomeImg = function() {
-        const url = document.getElementById('welcome-image-url').value.trim();
-        const p = document.getElementById('welcome-img-preview');
-        if (!url) { p.innerHTML = ''; return; }
-        p.innerHTML = '<img src="' + esc(url) + '" class="max-h-40 rounded-xl border border-gray-200 object-cover" onerror="this.style.display=\'none\'">';
-    };
 
     async function saveAppSettings(e) {
         e.preventDefault();
@@ -970,276 +1399,326 @@
         try {
             await settingsRef.child('welcome').set({
                 enabled: document.getElementById('welcome-enabled').checked,
-                imageUrl: document.getElementById('welcome-image-url').value.trim(),
                 title: document.getElementById('welcome-title').value,
                 message: document.getElementById('welcome-message').value,
                 buttonText: document.getElementById('welcome-button').value,
                 buttonUrl: document.getElementById('welcome-url').value.trim()
             });
-            showAlert('welcome-settings-alert', '✅ Welcome popup saved successfully with Image!', 'success');
+            alert('✅ Welcome popup saved!');
             await loadData();
-        } catch (error) { showAlert('welcome-settings-alert', error.message, 'error'); }
+        } catch (error) { alert(error.message); }
     }
 
-    // ==================== ADS SETTINGS ====================
+    // ==================== ADS & SCRIPT SLOTS ====================
     function renderAdSettings() {
         const ads = appSettings.ads || {};
         document.getElementById('page-content').innerHTML = 
-            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Ads & Script Slots</h1>' +
+            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6"><i class="fas fa-rectangle-ad text-indigo-500 mr-2"></i> Ads & Script Slots</h1>' +
+            '<div class="info-badge"><i class="fas fa-shield-halved"></i><span>Adsterra Direct Link এবং বিভিন্ন ব্যানার কোড এখান থেকে ম্যানেজ করুন।</span></div>' +
             '<div class="card">' +
+                '<div id="ads-settings-alert" class="alert hidden"></div>' +
                 '<form id="ads-settings-form">' +
                     '<div class="form-group">' +
-                        '<label class="form-label">Adsterra Direct Link (Required)</label>' +
-                        '<input id="adsterra-direct-link" type="url" class="form-input font-mono text-sm" value="' + esc(ads.adsterraDirectLink || '') + '" required>' +
+                        '<label class="form-label">Adsterra Direct Link (বাধ্যতামূলক)</label>' +
+                        '<input id="adsterra-direct-link" type="url" class="form-input font-mono text-sm" value="' + esc(ads.adsterraDirectLink || '') + '" placeholder="https://www.profitablecpmrate.com/..." required>' +
                     '</div>' +
-                    '<div class="form-group"><label class="form-label">Header Banner Script</label><textarea id="ads-header-code" class="form-textarea font-mono text-sm" rows="4">' + esc(ads.headerCode || '') + '</textarea></div>' +
-                    '<div class="form-group"><label class="form-label">Footer Banner Script</label><textarea id="ads-footer-code" class="form-textarea font-mono text-sm" rows="4">' + esc(ads.footerCode || '') + '</textarea></div>' +
-                    '<button class="btn btn-primary" type="submit">Save Ad Settings</button>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">Header Banner / Script Code</label>' +
+                        '<textarea id="ads-header-code" class="form-textarea font-mono text-sm" rows="5" placeholder="<!-- Paste Ad script here -->">' + esc(ads.headerCode || '') + '</textarea>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="form-label">Footer Banner / Script Code</label>' +
+                        '<textarea id="ads-footer-code" class="form-textarea font-mono text-sm" rows="5" placeholder="<!-- Paste Ad script here -->">' + esc(ads.footerCode || '') + '</textarea>' +
+                    '</div>' +
+                    '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+                        '<div class="form-group"><label class="form-label">Notice Button Text</label><input id="notice-button-text" class="form-input" value="' + esc(ads.noticeButtonText || 'Open') + '"></div>' +
+                        '<div class="form-group"><label class="form-label">Notice Button URL</label><input id="notice-button-url" type="url" class="form-input font-mono text-sm" value="' + esc(ads.noticeButtonUrl || '') + '"></div>' +
+                    '</div>' +
+                    '<button class="btn btn-primary" type="submit"><i class="fas fa-save mr-2"></i> Save Ad Settings</button>' +
                 '</form>' +
             '</div>';
-        document.getElementById('ads-settings-form').onsubmit = async function(e) {
-            e.preventDefault();
-            await settingsRef.child('ads').update({
-                adsterraDirectLink: document.getElementById('adsterra-direct-link').value.trim(),
-                headerCode: document.getElementById('ads-header-code').value,
-                footerCode: document.getElementById('ads-footer-code').value
-            });
-            alert('Ads settings saved!'); await loadData();
-        };
+        document.getElementById('ads-settings-form').onsubmit = saveAdSettings;
     }
 
-    // ==================== AI SETTINGS ====================
+    async function saveAdSettings(e) {
+        e.preventDefault();
+        try {
+            await settingsRef.child('ads').update({
+                activeNetwork: 'adsterra',
+                adsterraDirectLink: document.getElementById('adsterra-direct-link').value.trim(),
+                headerCode: document.getElementById('ads-header-code').value,
+                footerCode: document.getElementById('ads-footer-code').value,
+                noticeButtonText: document.getElementById('notice-button-text').value,
+                noticeButtonUrl: document.getElementById('notice-button-url').value.trim()
+            });
+            showAlert('ads-settings-alert', '✅ Ad settings saved!', 'success');
+            await loadData();
+        } catch (error) { showAlert('ads-settings-alert', error.message, 'error'); }
+    }
+
+    // ==================== AI CHAT SETTINGS ====================
     function renderAISettings() {
         const aiKey = appSettings.aiApiKey || (appSettings.ai ? (appSettings.ai.apiKey || '') : '');
         const apiUrl = appSettings.ai ? (appSettings.ai.apiURL || 'https://api.openai.com/v1/chat/completions') : 'https://api.openai.com/v1/chat/completions';
         const aiModel = appSettings.ai ? (appSettings.ai.model || 'gpt-4o-mini') : 'gpt-4o-mini';
+        const aiEnabled = appSettings.ai ? (appSettings.ai.enabled !== false) : true;
 
         document.getElementById('page-content').innerHTML = 
-            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">AI Chat Settings</h1>' +
-            '<div class="card"><form id="ai-settings-form">' +
-                '<div class="form-group"><label class="form-label">API Key</label><input type="password" id="ai-api-key" class="form-input font-mono" value="' + esc(aiKey) + '" required></div>' +
+            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6"><i class="fas fa-robot text-indigo-500 mr-2"></i> AI Chat Settings</h1>' +
+            '<div class="card"><div id="ai-settings-alert" class="alert hidden"></div>' +
+            '<form id="ai-settings-form">' +
+                '<div class="form-group flex items-center mb-4">' +
+                    '<input type="checkbox" id="ai-enabled" class="mr-3 w-5 h-5" ' + (aiEnabled ? 'checked' : '') + '>' +
+                    '<label class="form-label mb-0 cursor-pointer" for="ai-enabled">Enable AI Chat Assistant</label>' +
+                '</div>' +
                 '<div class="form-group"><label class="form-label">API URL</label><input type="url" id="ai-api-url" class="form-input font-mono" value="' + esc(apiUrl) + '" required></div>' +
+                '<div class="form-group"><label class="form-label">API Key</label><input type="password" id="ai-api-key" class="form-input font-mono" value="' + esc(aiKey) + '" placeholder="sk-..." required></div>' +
                 '<div class="form-group"><label class="form-label">Model</label><input type="text" id="ai-model" class="form-input" value="' + esc(aiModel) + '"></div>' +
-                '<button type="submit" class="btn btn-primary">Save AI Settings</button>' +
+                '<div class="form-group"><label class="form-label">Assistant Instructions (System Prompt)</label><textarea id="ai-instructions" class="form-textarea" rows="4" placeholder="How should the assistant reply?">' + esc(appSettings.ai && appSettings.ai.instructions || '') + '</textarea></div>' +
+                '<button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> Save AI Config</button>' +
             '</form></div>';
 
-        document.getElementById('ai-settings-form').onsubmit = async function(e) {
+        document.getElementById('ai-settings-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const k = document.getElementById('ai-api-key').value.trim();
-            await settingsRef.child('ai').update({
-                apiURL: document.getElementById('ai-api-url').value.trim(),
-                apiKey: k,
-                model: document.getElementById('ai-model').value.trim() || 'gpt-4o-mini'
-            });
-            await settingsRef.child('aiApiKey').set(k);
-            alert('AI Config saved!'); await loadData();
-        };
-    }
-
-    // ==================== ADMIN INFO ====================
-    function renderAdminInfo() {
-        const adminSettings = appSettings.admin || {};
-        const adminName = adminSettings.name || 'FILE HUB এডমিন';
-        const social = adminSettings.social || {};
-
-        document.getElementById('page-content').innerHTML = 
-            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Admin Contact Info</h1>' +
-            '<div class="card"><form id="admin-info-form">' +
-                '<div class="form-group"><label class="form-label">Admin Name</label><input type="text" id="admin-name" class="form-input" value="' + esc(adminName) + '" required></div>' +
-                '<div class="form-group"><label class="form-label">Telegram URL</label><input type="url" id="social-telegram" class="form-input" value="' + esc(social.telegram || '') + '"></div>' +
-                '<div class="form-group"><label class="form-label">Facebook URL</label><input type="url" id="social-facebook" class="form-input" value="' + esc(social.facebook || '') + '"></div>' +
-                '<div class="form-group"><label class="form-label">YouTube URL</label><input type="url" id="social-youtube" class="form-input" value="' + esc(social.youtube || '') + '"></div>' +
-                '<button type="submit" class="btn btn-primary">Save Info</button>' +
-            '</form></div>';
-
-        document.getElementById('admin-info-form').onsubmit = async function(e) {
-            e.preventDefault();
-            await settingsRef.child('admin').update({
-                name: document.getElementById('admin-name').value.trim() || 'Admin',
-                social: {
-                    telegram: document.getElementById('social-telegram').value.trim(),
-                    facebook: document.getElementById('social-facebook').value.trim(),
-                    youtube: document.getElementById('social-youtube').value.trim()
-                }
-            });
-            alert('Admin Info saved!'); await loadData();
-        };
-    }
-
-    // ==================== USERS ====================
-    function renderUsers() {
-        let rows = '';
-        allUsers.forEach(function(u) {
-            rows += '<tr>' +
-                '<td>' + (u.numericId || u.id.substring(0,8)) + '</td>' +
-                '<td class="font-medium">' + esc(u.username || 'Anonymous') + '</td>' +
-                '<td>' + esc(u.email || 'N/A') + '</td>' +
-                '<td><span class="status-badge ' + (u.isAccountActive !== false ? 'status-active' : 'status-inactive') + '">' + (u.isAccountActive !== false ? 'Active' : 'Banned') + '</span></td>' +
-                '<td><button class="btn btn-sm ' + (u.isAccountActive !== false ? 'btn-danger' : 'btn-success') + '" onclick="toggleUserBan(\'' + u.id + '\', ' + (u.isAccountActive !== false) + ')">' + (u.isAccountActive !== false ? 'Ban' : 'Unban') + '</button></td>' +
-            '</tr>';
+            const apiKeyVal = document.getElementById('ai-api-key').value.trim();
+            try {
+                await settingsRef.child('ai').update({
+                    enabled: document.getElementById('ai-enabled').checked,
+                    apiURL: document.getElementById('ai-api-url').value.trim(),
+                    apiKey: apiKeyVal,
+                    model: document.getElementById('ai-model').value.trim() || 'gpt-4o-mini',
+                    instructions: document.getElementById('ai-instructions').value.trim()
+                });
+                await settingsRef.child('aiApiKey').set(apiKeyVal);
+                showAlert('ai-settings-alert', 'AI settings saved!', 'success');
+                await loadData();
+            } catch (error) { showAlert('ai-settings-alert', error.message, 'error'); }
         });
-
-        document.getElementById('page-content').innerHTML = 
-            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Users Management</h1>' +
-            '<div class="card overflow-x-auto"><table class="data-table w-full"><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>' +
-            '<tbody>' + (rows || '<tr><td colspan="5" class="text-center py-6">No users found</td></tr>') + '</tbody></table></div>';
     }
 
-    async function toggleUserBan(userId, currentStatus) {
-        if (!confirm('Change account status?')) return;
-        await usersRef.child(userId).update({ isAccountActive: !currentStatus });
-        await loadData();
-    }
-
-    // ==================== NOTIFICATIONS ====================
-    function renderNotifications() {
-        document.getElementById('page-content').innerHTML = 
-            '<h1 class="text-3xl font-bold font-[\'Outfit\'] mb-6">Push Notice</h1>' +
-            '<div class="card"><form id="notif-form">' +
-                '<div class="form-group"><label class="form-label">Notice Title</label><input type="text" id="notif-title" class="form-input" required></div>' +
-                '<div class="form-group"><label class="form-label">Notice Details (Markdown)</label><textarea id="notif-desc" class="form-textarea" rows="4" required></textarea></div>' +
-                '<button type="submit" class="btn btn-primary">Broadcast Notice</button>' +
-            '</form></div>';
-
-        document.getElementById('notif-form').onsubmit = async function(e) {
-            e.preventDefault();
-            await notificationsRef.push({
-                title: document.getElementById('notif-title').value,
-                decs: document.getElementById('notif-desc').value,
-                created_at: Date.now(),
-                is_read: false,
-                target_uid: 'all'
-            });
-            alert('Notice sent!');
-            document.getElementById('notif-form').reset();
-        };
-    }
-
-    // ==================== FILE MODALS ====================
+    // ==================== FILE FORM ====================
     function openFileForm(fileId) {
-        const file = fileId ? allFiles.find(f => f.id === fileId) : {};
-        document.getElementById('modal-title').textContent = fileId ? 'Edit File' : 'Upload File';
-        
+        const file = fileId ? allFiles.find(function(f) { return f.id === fileId; }) : {};
+        document.getElementById('modal-title').textContent = fileId ? 'Edit File' : 'Upload / Add New File';
+
+        const isCustomSlug = fileId && !file.id.startsWith('-');
+        const existingSlug = isCustomSlug ? file.id : '';
+        const detailPhotosStr = (file.detail_photos || []).join('\n');
+
         document.getElementById('modal-form').innerHTML = 
-            '<div class="form-group"><label class="form-label">Title</label><input id="file-title" class="form-input" value="' + esc(file.title || '') + '" required></div>' +
-            '<div class="form-group"><label class="form-label">Custom Slug (Optional)</label><input id="file-slug" class="form-input" value="' + esc(file.id && !file.id.startsWith('-') ? file.id : '') + '"></div>' +
-            '<div class="form-group"><label class="form-label">Description</label><textarea id="file-description" class="form-textarea" rows="4" required>' + esc(file.description || '') + '</textarea></div>' +
-            '<div class="form-group"><label class="form-label">Thumbnail URL</label><input id="file-thumbnail" class="form-input" value="' + esc(file.thumbnail_url || '') + '" required></div>' +
-            '<div class="form-group"><label class="form-label">Download URL</label><input id="file-download-url" class="form-input" value="' + esc(file.download_url || '') + '" required></div>' +
-            '<div class="grid grid-cols-2 gap-4">' +
-                '<div class="form-group"><label class="form-label">Extension</label><input id="file-extension" class="form-input" value="' + esc(file.file_extension || '.apk') + '" required></div>' +
-                '<div class="form-group"><label class="form-label">Required Ads</label><input type="number" id="file-required-ads" class="form-input" value="' + (file.required_ads || 0) + '"></div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Title <span style="color:var(--red);">*</span></label>' +
+                '<input type="text" id="file-title" class="form-input" value="' + esc(file.title || '') + '" placeholder="e.g., TikTok Mod APK 2024" oninput="autoGenerateSlug()" required>' +
             '</div>' +
-            '<button type="submit" class="btn btn-primary w-full">Save File</button>';
+            '<div class="form-group">' +
+                '<label class="form-label">🔗 Custom URL Slug (Optional)</label>' +
+                '<div class="slug-input-wrapper"><span class="prefix">/file/</span>' +
+                '<input type="text" id="file-slug" value="' + esc(existingSlug) + '" placeholder="tiktok-mod-apk" oninput="sanitizeSlugInput()">' +
+                '</div><div class="slug-preview" id="slug-preview">Loading...</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+                '<label class="form-label">Description (Markdown Supported)</label>' +
+                '<textarea id="file-description" class="form-textarea" rows="6" placeholder="Markdown supported..." required>' + esc(file.description || '') + '</textarea>' +
+                '<p style="font-size:0.75rem;color:var(--text-sub);margin-top:5px;">Markdown: # Heading, **bold**, - list, [link](url), quote, code, ---</p>' +
+            '</div>' +
+            '<div class="form-group"><label class="form-label">Thumbnail URL</label><input type="url" id="file-thumbnail" class="form-input" value="' + esc(file.thumbnail_url || '') + '" required></div>' +
+            '<div class="form-group"><label class="form-label">Download URL</label><input type="url" id="file-download-url" class="form-input" value="' + esc(file.download_url || '') + '" required></div>' +
+            '<div class="grid grid-cols-2 gap-4">' +
+                '<div class="form-group"><label class="form-label">Extension</label><input type="text" id="file-extension" class="form-input" value="' + esc(file.file_extension || '.zip') + '" required></div>' +
+                '<div class="form-group"><label class="form-label">Required Ads</label><input type="number" id="file-required-ads" class="form-input" value="' + (file.required_ads || 0) + '" min="0" required></div>' +
+            '</div>' +
+            '<div class="form-group"><label class="form-label">Detail Photos (প্রতি লাইনে একটি URL)</label>' +
+            '<textarea id="file-detail-photos" class="form-textarea" rows="3" placeholder="https://img1.jpg" style="font-family:monospace;font-size:0.82rem;">' + esc(detailPhotosStr) + '</textarea></div>' +
+            '<div class="form-group"><label class="form-label">Status</label>' +
+            '<select id="file-status" class="form-select">' +
+                '<option value="approved" ' + (file.status === 'approved' || !fileId ? 'selected' : '') + '>Approved (Public)</option>' +
+                '<option value="pending" ' + (file.status === 'pending' ? 'selected' : '') + '>Pending Review</option>' +
+                '<option value="rejected" ' + (file.status === 'rejected' ? 'selected' : '') + '>Rejected</option>' +
+            '</select></div>' +
+            '<div class="flex justify-end gap-3 mt-4">' +
+                '<button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>' +
+                '<button type="submit" class="btn btn-success" id="save-file-btn"><i class="fas fa-save mr-2"></i> Save File</button>' +
+            '</div>';
 
-        document.getElementById('modal-form').onsubmit = async function(e) {
-            e.preventDefault();
-            const title = document.getElementById('file-title').value.trim();
-            const slug = document.getElementById('file-slug').value.trim() || generateSlugFromTitle(title) || 'file-' + Date.now();
-            const data = {
-                title: title,
-                description: document.getElementById('file-description').value,
-                thumbnail_url: document.getElementById('file-thumbnail').value,
-                download_url: document.getElementById('file-download-url').value,
-                file_extension: document.getElementById('file-extension').value,
-                required_ads: parseInt(document.getElementById('file-required-ads').value) || 0,
-                status: 'approved',
-                created_at: file.created_at || Date.now(),
-                total_downloads: file.total_downloads || 0
-            };
-            if (fileId && fileId !== slug) await filesRef.child(fileId).remove();
-            await filesRef.child(slug).set(data);
-            closeModal(); await loadData();
-        };
+        setTimeout(function() {
+            if (existingSlug) {
+                const slugInput = document.getElementById('file-slug');
+                if (slugInput) slugInput.dataset.userEdited = 'true';
+            }
+            updateSlugPreview();
+        }, 50);
+
+        document.getElementById('modal-form').onsubmit = function(e) { saveFile(e, fileId); };
         openModal();
     }
 
-    function editFile(id) { openFileForm(id); }
-    async function deleteFile(id) {
-        if (!confirm('Delete file?')) return;
-        await filesRef.child(id).remove(); await loadData();
+    async function saveFile(e, fileId) {
+        e.preventDefault();
+        const saveBtn = document.getElementById('save-file-btn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+        const existingFile = fileId ? allFiles.find(function(f) { return f.id === fileId; }) : {};
+        const title = document.getElementById('file-title').value.trim();
+        const customSlug = document.getElementById('file-slug').value.trim();
+
+        let baseSlug = customSlug || generateSlugFromTitle(title);
+        if (!baseSlug) baseSlug = 'file-' + Date.now().toString().slice(-8);
+
+        let finalSlug = baseSlug;
+        if (!fileId || (existingFile.id && existingFile.id !== baseSlug)) {
+            finalSlug = await getUniqueSlug(baseSlug, fileId);
+        }
+
+        const detailPhotosText = document.getElementById('file-detail-photos').value.trim();
+        const detailPhotos = detailPhotosText.split('\n').map(function(u) { return u.trim(); }).filter(function(u) { return u; });
+
+        const fileData = {
+            title: title,
+            description: document.getElementById('file-description').value,
+            thumbnail_url: document.getElementById('file-thumbnail').value,
+            download_url: document.getElementById('file-download-url').value,
+            file_extension: document.getElementById('file-extension').value,
+            required_ads: parseInt(document.getElementById('file-required-ads').value) || 0,
+            detail_photos: detailPhotos,
+            status: document.getElementById('file-status').value,
+            created_at: existingFile.created_at || Date.now(),
+            total_downloads: existingFile.total_downloads || 0,
+            uploadedBy: existingFile.uploadedBy || currentUser.uid,
+            uploadedByEmail: existingFile.uploadedByEmail || currentUser.email
+        };
+
+        try {
+            if (fileId) {
+                if (existingFile.id !== finalSlug) {
+                    await filesRef.child(finalSlug).set(fileData);
+                    await filesRef.child(existingFile.id).remove();
+                } else {
+                    await filesRef.child(fileId).update(fileData);
+                }
+            } else {
+                await filesRef.child(finalSlug).set(fileData);
+            }
+            showAlert('modal-alert', '✅ File saved! URL: /file/' + finalSlug, 'success');
+            setTimeout(function() { closeModal(); loadData(); }, 1500);
+        } catch (error) {
+            showAlert('modal-alert', error.message, 'error');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save File';
+        }
     }
 
-    // ==================== BANNER MODALS ====================
+    function editFile(fileId) { openFileForm(fileId); }
+    function deleteFile(fileId, title) {
+        openConfirmModal('Delete file "' + title + '" permanently?', async function() {
+            await filesRef.child(fileId).remove();
+            await loadData();
+        });
+    }
+
+    // ==================== BANNER FORM ====================
     function openBannerForm(bannerId) {
-        const b = bannerId ? allBanners.find(x => x.id === bannerId) : {};
-        document.getElementById('modal-title').textContent = bannerId ? 'Edit Banner' : 'Add Banner';
-        document.getElementById('modal-form').innerHTML = 
-            '<div class="form-group"><label class="form-label">Title</label><input id="banner-title" class="form-input" value="' + esc(b.title || '') + '" required></div>' +
-            '<div class="form-group"><label class="form-label">Image URL</label><input id="banner-thumb" class="form-input" value="' + esc(b.thumbnail_url || '') + '" required></div>' +
-            '<div class="form-group"><label class="form-label">Target Link (Optional)</label><input id="banner-link" class="form-input" value="' + esc(b.download_url || '') + '"></div>' +
-            '<button type="submit" class="btn btn-primary w-full">Save Slider</button>';
+        const banner = bannerId ? allBanners.find(function(b) { return b.id === bannerId; }) : {};
+        document.getElementById('modal-title').textContent = bannerId ? '✏️ Edit Slider' : '➕ Add Slider';
 
-        document.getElementById('modal-form').onsubmit = async function(e) {
-            e.preventDefault();
-            const d = {
-                title: document.getElementById('banner-title').value,
-                thumbnail_url: document.getElementById('banner-thumb').value,
-                download_url: document.getElementById('banner-link').value,
-                created_at: b.created_at || Date.now()
-            };
-            if (bannerId) await bannersRef.child(bannerId).update(d);
-            else await bannersRef.push(d);
-            closeModal(); await loadData();
-        };
-        openModal();
-    }
-    function editBanner(id) { openBannerForm(id); }
-    async function deleteBanner(id) {
-        if (!confirm('Delete slider?')) return;
-        await bannersRef.child(id).remove(); await loadData();
-    }
-
-    // ==================== PROMPT MODALS ====================
-    function openPromptForm(index) {
-        const prompts = (appSettings.aiImage && appSettings.aiImage.prompts) || [];
-        const p = (index !== null && index !== undefined) ? prompts[index] : {};
-        document.getElementById('modal-title').textContent = index !== null && index !== undefined ? 'Edit Prompt' : 'Add Prompt';
+        const previewImg = banner.thumbnail_url ? '<img src="' + esc(banner.thumbnail_url) + '" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--border);">' : '';
 
         document.getElementById('modal-form').innerHTML = 
-            '<div class="form-group"><label class="form-label">Title</label><input id="prompt-title" class="form-input" value="' + esc(p.title || '') + '" required></div>' +
-            '<div class="form-group"><label class="form-label">Prompt</label><textarea id="prompt-text" class="form-textarea" rows="4" required>' + esc(p.prompt || '') + '</textarea></div>' +
-            '<div class="form-group"><label class="form-label">Sample Image URL</label><input id="prompt-sample" class="form-input" value="' + esc(p.sample_image || '') + '"></div>' +
-            '<div class="form-group"><label class="form-label">Required Ads Steps</label><input type="number" id="prompt-ads" class="form-input" value="' + (p.required_ads || 0) + '"></div>' +
-            '<button type="submit" class="btn btn-primary w-full">Save Prompt</button>';
+            '<div class="form-group"><label class="form-label">Title <span style="color:var(--red);">*</span></label>' +
+            '<input type="text" id="banner-title" class="form-input" value="' + esc(banner.title || '') + '" required></div>' +
+            '<div class="form-group"><label class="form-label">Image URL <span style="color:var(--red);">*</span></label>' +
+            '<input type="url" id="banner-thumbnail" class="form-input" value="' + esc(banner.thumbnail_url || '') + '" oninput="previewBannerImage()" required>' +
+            '<div id="banner-image-preview" style="margin-top:10px;">' + previewImg + '</div>' +
+            '<p style="font-size:0.75rem;color:var(--text-sub);margin-top:5px;">💡 1200×630 px recommended</p></div>' +
+            '<div class="form-group"><label class="form-label">Target Link (Optional)</label>' +
+            '<input type="url" id="banner-download-url" class="form-input" value="' + esc(banner.download_url || '') + '" placeholder="https://example.com/page"></div>' +
+            '<div class="flex justify-end gap-3 mt-4">' +
+                '<button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>' +
+                '<button type="submit" class="btn btn-success" id="save-banner-btn"><i class="fas fa-save mr-2"></i> Save Banner</button>' +
+            '</div>';
 
-        document.getElementById('modal-form').onsubmit = async function(e) {
-            e.preventDefault();
-            let arr = prompts.slice();
-            const obj = {
-                title: document.getElementById('prompt-title').value,
-                prompt: document.getElementById('prompt-text').value,
-                sample_image: document.getElementById('prompt-sample').value,
-                required_ads: parseInt(document.getElementById('prompt-ads').value) || 0,
-                created_at: p.created_at || Date.now()
-            };
-            if (index !== null && index !== undefined) arr[index] = obj;
-            else arr.push(obj);
-
-            await settingsRef.child('aiImage').child('prompts').set(arr);
-            closeModal(); await loadData();
-        };
+        document.getElementById('modal-form').onsubmit = function(e) { saveBanner(e, bannerId); };
         openModal();
     }
 
-    function copyPromptAdmin(i) {
-        const p = appSettings.aiImage.prompts[i];
-        navigator.clipboard.writeText(p.prompt).then(() => alert('Copied!'));
-    }
-    async function deletePrompt(i) {
-        if (!confirm('Delete prompt?')) return;
-        let arr = appSettings.aiImage.prompts.slice();
-        arr.splice(i, 1);
-        await settingsRef.child('aiImage').child('prompts').set(arr);
-        await loadData();
+    window.previewBannerImage = function() {
+        const url = document.getElementById('banner-thumbnail').value.trim();
+        const preview = document.getElementById('banner-image-preview');
+        if (!url) { preview.innerHTML = ''; return; }
+        preview.innerHTML = '<img src="' + esc(url) + '" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--border);" onerror="this.style.display=\'none\'">';
+    };
+
+    async function saveBanner(e, bannerId) {
+        e.preventDefault();
+        const saveBtn = document.getElementById('save-banner-btn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+        const existingBanner = bannerId ? allBanners.find(function(b) { return b.id === bannerId; }) : {};
+        const bannerData = {
+            title: document.getElementById('banner-title').value,
+            thumbnail_url: document.getElementById('banner-thumbnail').value,
+            download_url: document.getElementById('banner-download-url').value,
+            created_at: existingBanner.created_at || Date.now()
+        };
+        try {
+            if (bannerId) await bannersRef.child(bannerId).update(bannerData);
+            else await bannersRef.push(bannerData);
+            showAlert('modal-alert', '✅ Banner saved!', 'success');
+            setTimeout(function() { closeModal(); loadData(); }, 1000);
+        } catch (error) {
+            showAlert('modal-alert', error.message, 'error');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Banner';
+        }
     }
 
-    // গ্লোবাল ফাংশন
+    function editBanner(bannerId) { openBannerForm(bannerId); }
+    function deleteBanner(bannerId, title) {
+        openConfirmModal('Delete slider "' + title + '"?', async function() {
+            await bannersRef.child(bannerId).remove();
+            await loadData();
+        });
+    }
+
+    // ==================== EDIT USER ====================
+    function editUser(userId) {
+        const user = allUsers.find(function(u) { return u.id === userId; });
+        if (!user) return;
+        document.getElementById('modal-title').textContent = 'Edit User';
+
+        document.getElementById('modal-form').innerHTML = 
+            '<div class="form-group"><label class="form-label">User ID</label><input type="text" class="form-input" value="' + esc(user.numericId || user.id) + '" disabled></div>' +
+            '<div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" value="' + esc(user.email || '') + '" disabled></div>' +
+            '<div class="form-group"><label class="form-label">Username</label><input type="text" id="user-username" class="form-input" value="' + esc(user.username || '') + '" required></div>' +
+            '<div class="form-group"><label class="form-label">Full Name</label><input type="text" id="user-fullname" class="form-input" value="' + esc(user.fullname || '') + '" required></div>' +
+            '<div class="flex justify-end gap-3 mt-4">' +
+                '<button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>' +
+                '<button type="submit" class="btn btn-success">Save</button>' +
+            '</div>';
+
+        document.getElementById('modal-form').onsubmit = async function(e) {
+            e.preventDefault();
+            try {
+                await usersRef.child(userId).update({
+                    username: document.getElementById('user-username').value,
+                    fullname: document.getElementById('user-fullname').value
+                });
+                closeModal();
+                await loadData();
+            } catch (err) { showAlert('modal-alert', err.message, 'error'); }
+        };
+        openModal();
+    }
+
+    // গ্লোবাল মেথড এক্সপোজ
     window.toggleSidebar = toggleSidebar;
     window.loadPage = loadPage;
     window.logout = logout;
     window.openModal = openModal;
     window.closeModal = closeModal;
+    window.openConfirmModal = openConfirmModal;
+    window.closeConfirmModal = closeConfirmModal;
     window.openFileForm = openFileForm;
     window.editFile = editFile;
     window.deleteFile = deleteFile;
@@ -1247,9 +1726,19 @@
     window.openBannerForm = openBannerForm;
     window.editBanner = editBanner;
     window.deleteBanner = deleteBanner;
+    window.editUser = editUser;
     window.toggleUserBan = toggleUserBan;
+    window.deleteNotification = deleteNotification;
+    window.loadData = loadData;
+    window.showAlert = showAlert;
+    window.autoGenerateSlug = autoGenerateSlug;
+    window.sanitizeSlugInput = sanitizeSlugInput;
+    window.updateSlugPreview = updateSlugPreview;
     window.openPromptForm = openPromptForm;
     window.deletePrompt = deletePrompt;
+    window.previewSampleImage = previewSampleImage;
+    window.previewDetailPhotos = previewDetailPhotos;
+    window.previewBannerImage = previewBannerImage;
     window.copyPromptAdmin = copyPromptAdmin;
 </script>
 

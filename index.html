@@ -32,9 +32,10 @@
     <script data-cfasync="false" src="https://bauval.org/14/12c581abd9e7089666194369024aad62"></script>
     <script data-cfasync="false" src="https://abscloud.org/1/aa518407278d008068a3326ddbdce51e"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <!-- Firebase v9 Compat Scripts (Matches Admin Panel) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 
     <script>
         (function() {
@@ -156,7 +157,6 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* ==================== নোটিশ বোর্ড ==================== */
         .scrolling-notice-container {
             background: linear-gradient(135deg, var(--primary), #818cf8);
             color: #ffffff;
@@ -182,7 +182,6 @@
         .notice-action-btn { color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.8); padding: 5px 14px; border-radius: 999px; font-size: .8rem; white-space: nowrap; flex-shrink: 0; transition: 0.2s; font-weight: 600; }
         .notice-action-btn:hover { background: rgba(255,255,255,0.25); }
 
-        /* ==================== AI সুন্দর ইনলাইন কার্ড ডিজাইন ==================== */
         .ai-file-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -250,7 +249,6 @@
             gap: 4px;
         }
 
-        /* ==================== ওয়েলকাম পপ-আপ ==================== */
         .welcome-overlay {
             position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72);
             backdrop-filter: blur(10px); z-index: 5000; display: none;
@@ -282,7 +280,6 @@
         .welcome-secondary { color: var(--text-main); background: var(--bg); border: 1px solid var(--border) !important; }
         .welcome-secondary:hover { background: var(--border); }
 
-        /* ==================== প্রোফাইল ও অন্যান্য ডিজাইন ==================== */
         .profile-container { max-width: 900px; margin: 0 auto; }
         .profile-card-modern {
             background: var(--surface); border-radius: 28px; overflow: hidden;
@@ -869,7 +866,9 @@
         appId: "1:425635065125:web:a8ce55b1745f301bb5becc",
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const database = firebase.database();
 
@@ -1062,11 +1061,6 @@
     }
 
     function getAiAvatarUrl(mode) { return mode === 'dark' ? CHAT_AI_DARK : CHAT_AI_LIGHT; }
-
-    function getOfficialRegistrationUrl() {
-        const configured = appSettings.ai && appSettings.ai.registrationUrl;
-        return configured || (window.location.origin + '/register');
-    }
 
     function updateDynamicImages(mode) {
         const headerIcon = document.getElementById('headerAiIcon');
@@ -1344,7 +1338,7 @@
         }
         notifList.innerHTML = allNotifications.map(function(n) {
             const isUnread = !n.is_read;
-            return '<li class="notif-item ' + (isUnread ? 'unread' : '') + '" onclick="openNotifDetail(\'' + n.id + \')">' +
+            return '<li class="notif-item ' + (isUnread ? 'unread' : '') + '" onclick="openNotifDetail(\'' + n.id + '\')">' +
                 '<div class="notif-title-list">' + escapeHtmlUser(n.title || 'Notification') + '</div>' +
                 '<div class="notif-time">' + timeAgoShort(n.created_at) + '</div></li>';
         }).join('');
@@ -1413,7 +1407,6 @@
         } catch(e) { console.error(e); }
     }
 
-    // AI উত্তর থেকে Markdown লিংক বা [FILE:id|title|ext] পার্স করে সুন্দর কার্ড তৈরি করার ফাংশন
     function parseFileLinks(text) {
         if (!text) return '';
         
@@ -1535,7 +1528,6 @@
                 .filter(function(t) { return t.status === 'approved'; })
                 .map(function(t) { return { id: t.id, title: t.title, extension: '.html', category: 'html-template', status: 'approved' }; });
 
-            // Admin Info & Social Links from settings
             const adminInfo = settingsVal.admin || {};
             const adminName = adminInfo.name || 'FILE HUB এডমিন';
             const adminBio = adminInfo.bio || '';

@@ -7,6 +7,8 @@ const FIREBASE_DB_URL = "https://file-5dd84-default-rtdb.firebaseio.com";
 module.exports = async (req, res) => {
     const slug = req.query.slug || '';
     const bannerId = req.query.banner || '';
+    const templateId = req.query.template || '';
+    const page = req.query.page || '';
     const baseUrl = 'https://' + (req.headers.host || 'filehub.vercel.app');
 
     // Default values
@@ -17,6 +19,7 @@ module.exports = async (req, res) => {
     let item = null;
     let type = 'file';
     let shareUrl = baseUrl;
+    let redirectPath = '/';
 
     try {
         // ---- Firebase REST API থেকে ডেটা আনা ----
@@ -26,6 +29,7 @@ module.exports = async (req, res) => {
                 item = await response.json();
                 type = 'file';
                 shareUrl = `${baseUrl}/file/${slug}`;
+                redirectPath = `/#/file/${encodeURIComponent(slug)}`;
             }
         } else if (bannerId) {
             const response = await fetch(`${FIREBASE_DB_URL}/banners/${encodeURIComponent(bannerId)}.json`);
@@ -33,6 +37,15 @@ module.exports = async (req, res) => {
                 item = await response.json();
                 type = 'banner';
                 shareUrl = `${baseUrl}/banner/${bannerId}`;
+                redirectPath = `/#/banner/${encodeURIComponent(bannerId)}`;
+            }
+        } else if (templateId) {
+            const response = await fetch(`${FIREBASE_DB_URL}/html_templates/${encodeURIComponent(templateId)}.json`);
+            if (response.ok) {
+                item = await response.json();
+                type = 'template';
+                shareUrl = `${baseUrl}/template/${encodeURIComponent(templateId)}`;
+                redirectPath = `/#/templates?template=${encodeURIComponent(templateId)}`;
             }
         }
 
@@ -44,9 +57,23 @@ module.exports = async (req, res) => {
 
         if (item) {
             title = cleanText(item.title) || DEFAULT_TITLE;
-            description = cleanText(item.description || DEFAULT_DESC).substring(0, 160);
+            description = cleanText(item.description || (type === 'template' ? 'Preview and download HTML animation templates on FileHub.' : DEFAULT_DESC)).substring(0, 160);
             image = item.thumbnail_url || DEFAULT_IMAGE;
             fileExt = (item.file_extension || '').toUpperCase();
+        } else if (page) {
+            const pageMeta = {
+                templates: ['HTML Templates — FileHub', 'Preview and download ready-to-use HTML and CSS animation templates on FileHub.'],
+                files: ['Files & Downloads — FileHub', 'Browse approved files, APKs and downloadable resources on FileHub.'],
+                prompts: ['AI Image Prompts — FileHub', 'Browse ready-to-use AI image prompts on FileHub.'],
+                register: ['Register — FileHub', 'Create your FileHub account and access the resource library.']
+            }[page];
+            if (pageMeta) {
+                type = 'page';
+                title = pageMeta[0];
+                description = pageMeta[1];
+                shareUrl = `${baseUrl}/${encodeURIComponent(page)}`;
+                redirectPath = `/#/${encodeURIComponent(page)}`;
+            }
         }
 
         // ---- HTML Response ----
@@ -62,7 +89,7 @@ module.exports = async (req, res) => {
     <meta name="description" content="${escapeHtml(description)}">
     
     <!-- Open Graph / Facebook / WhatsApp / Telegram -->
-    <meta property="og:type" content="article">
+    <meta property="og:type" content="${type === 'file' || type === 'banner' ? 'article' : 'website'}">
     <meta property="og:url" content="${escapeHtml(shareUrl)}">
     <meta property="og:title" content="${escapeHtml(title)}">
     <meta property="og:description" content="${escapeHtml(description)}">
@@ -106,7 +133,7 @@ module.exports = async (req, res) => {
     <link rel="canonical" href="${escapeHtml(shareUrl)}">
     
     <!-- Auto redirect to app after preview -->
-    <meta http-equiv="refresh" content="0;url=/#/file/${escapeHtml(slug || bannerId)}">
+    <meta http-equiv="refresh" content="0;url=${escapeHtml(redirectPath)}">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -219,7 +246,7 @@ module.exports = async (req, res) => {
     <script>
         // Auto redirect for real browsers
         setTimeout(function() {
-            window.location.href = '/#/file/${escapeHtml(slug || bannerId)}';
+            window.location.href = '${escapeHtml(redirectPath)}';
         }, 800);
     </script>
 </body>

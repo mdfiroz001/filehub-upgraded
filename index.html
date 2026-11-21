@@ -1424,27 +1424,16 @@
         });
 
         // সাধারণ Markdown লিংক যেমন [Title](https://.../file/XYZ) বা সাইটের লিংক থাকলে সেটিকেও সুন্দর কার্ড বা ইনলাইন বাটনে রূপান্তর
-        processed = processed.replace(/\[CARD:([^|\]]+)\|([^\]]+)\]/g, function(match,label,value){
-            return '\\n\\n<div class="ai-file-card" data-file-ext="Info"><div class="ai-file-icon">▣</div><div class="ai-file-info"><div class="ai-file-title">' + escapeHtmlUser(label.trim()) + '</div><div class="ai-file-meta"><span class="ai-file-ext">' + escapeHtmlUser(value.trim()) + '</span></div></div></div>\\n\\n';
-        });
-
-        const mdLinkRegex = /\[([^\]]+)\]\(((?:https?:\/\/|mailto:|tel:)[^\)]+)\)/g;
+        const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
         processed = processed.replace(mdLinkRegex, function(match, title, url) {
-            if (url.includes('/template/')) {
-                const templateId = decodeURIComponent(url.split('/template/')[1].split(/[?#]/)[0]);
-                return '\n\n<div class="ai-file-card" data-template-id="' + escapeHtmlUser(templateId) + '" data-file-ext="HTML Animation"><div class="ai-file-icon">🎞️</div><div class="ai-file-info"><div class="ai-file-title">' + escapeHtmlUser(title) + '</div><div class="ai-file-meta"><span class="ai-file-ext">HTML Animation</span><span class="ai-file-cta">Open Animation →</span></div></div></div>\n\n';
-            }
             if (url.includes('/file/') || url.includes('/banner/')) {
                 const parts = url.split('/');
                 const fileId = parts[parts.length - 1];
                 return '\n\n<div class="ai-file-card" data-file-id="' + fileId + '" data-file-ext="link"><div class="ai-file-icon">🔗</div><div class="ai-file-info"><div class="ai-file-title">' + escapeHtmlUser(title) + '</div><div class="ai-file-meta"><span class="ai-file-ext">FileHub</span><span class="ai-file-cta">Open Link →</span></div></div></div>\n\n';
             }
-            return '\n\n<div class="ai-file-card" data-external-url="' + escapeHtmlUser(url) + '" data-file-ext="link"><div class="ai-file-icon">🔗</div><div class="ai-file-info"><div class="ai-file-title">' + escapeHtmlUser(title) + '</div><div class="ai-file-meta"><span class="ai-file-ext">Website / Link</span><span class="ai-file-cta">Open Link →</span></div></div></div>\n\n';
+            return '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--primary); font-weight:600; text-decoration:underline;">' + title + '</a>';
         });
 
-        processed = processed.replace(/(^|[\\s(])([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})(?=$|[\\s),.])/gim, function(match,prefix,email){
-            return prefix + '<div class="ai-file-card" data-external-url="mailto:' + email + '" data-file-ext="Email"><div class="ai-file-icon">✉️</div><div class="ai-file-info"><div class="ai-file-title">' + email + '</div><div class="ai-file-meta"><span class="ai-file-ext">Email Address</span><span class="ai-file-cta">Send Email →</span></div></div></div>';
-        });
         processed = processed.replace(/\n{3,}/g, '\n\n');
         return processed;
     }
@@ -1469,7 +1458,7 @@
         
         if (role === 'ai') {
             const processedText = parseFileLinks(text);
-            const parsed = DOMPurify.sanitize(marked.parse(processedText), { ADD_ATTR: ['data-file-id', 'data-file-ext', 'data-template-id', 'data-external-url', 'target', 'href'] });
+            const parsed = DOMPurify.sanitize(marked.parse(processedText), { ADD_ATTR: ['data-file-id', 'data-file-ext', 'target', 'href'] });
             const avatarUrl = getAiAvatarUrl(document.documentElement.getAttribute('data-theme'));
             div.innerHTML = '<img src="' + avatarUrl + '" class="ai-avatar"><div class="ai-content">' + parsed + '</div>';
             
@@ -1479,8 +1468,6 @@
                         e.preventDefault();
                         const fileId = card.dataset.fileId;
                         if (fileId) { closeSheetCommon(); setTimeout(function() { navigateTo('/file/' + fileId); }, 350); }
-                        const templateId=card.dataset.templateId; if(templateId){closeSheetCommon();setTimeout(function(){navigateTo('/template/'+encodeURIComponent(templateId));},350);}
-                        const externalUrl=card.dataset.externalUrl; if(externalUrl){window.open(externalUrl,'_blank','noopener');}
                     });
                 });
             }, 50);
@@ -1544,18 +1531,12 @@
 
             const websiteName = (settingsVal.app && settingsVal.app.appName) || 'FileHub';
             const registrationUrl = (aiSettings.registrationUrl || (window.location.origin + '/register')).trim();
-            const siteDescription = 'FileHub is a secure file sharing platform offering files, AI prompts, and HTML/CSS animations.';
-            if(!htmlTemplatesCache || !htmlTemplatesCache.length){try{await loadHtmlTemplates();}catch(templateLoadError){console.warn('AI template context unavailable',templateLoadError);}}
-            const templateList = (htmlTemplatesCache || []).filter(function(t){return t.status==='approved';}).map(function(t){return {id:t.id,title:t.title||'HTML Animation',required_ads:parseInt(t.required_ads||0,10)||0,url:window.location.origin+'/template/'+encodeURIComponent(t.id),preview_url:window.location.origin+'/template/'+encodeURIComponent(t.id),download_rule:'Preview is open; download/copy requires completing the listed ad steps.'};});
-            const contactCardRule = "CONTACT CARD RULE: Present every email address, website URL, social/profile link, phone number, payment/account detail, and important contact information in a separate, attractive Markdown card. Use a short heading and the special token [CARD:Label|Exact value] for each email, phone, payment number, account detail, address, or other important information; use clickable Markdown links such as [Call](tel:+880...) or [Email](mailto:name@example.com) for contact actions. Never bury these details in long paragraphs; preserve exact values and URLs.";
-
+            const siteDescription = 'FileHub is a secure file sharing platform offering premium APK mods, files, and AI prompts.';
 
             const systemPrompt = "You are FileHub AI, a friendly and capable assistant for " + websiteName + ". Speak Bengali (বাংলা) unless the user asks in English.\n" +
-                "INLINE CARD & LINK RULE: When mentioning any file, APK, AI Prompt, or HTML Animation from the supplied lists, ALWAYS provide its link in Markdown format.\n" +
-                "HTML TEMPLATE KNOWLEDGE: You fully understand the FileHub HTML Template Library. Admins publish HTML/CSS animations. Users browse /templates and see automatic live previews without pressing Preview. Every published animation has its own unique share URL. Opening that URL directly opens the exact animation preview. Downloading or copying the source code requires completing its required ad steps. Explain preview, sharing, ad unlock, download HTML, and copy code in Bengali. Only list templates from the supplied published template list; never invent template titles or links. If the list is empty, say no templates are currently published.\n" +
-                contactCardRule + "\n" +
+                "INLINE CARD & LINK RULE: When mentioning any file, APK, or AI Prompt from the supplied list, ALWAYS provide its link in the Markdown format: [Item Title](Item URL). The system will automatically convert this into a stunning interactive card button for the user.\n" +
                 "REGISTRATION RULE: When the user asks how to register, sign up, or create an account, provide the official registration link: [FileHub-এ রেজিস্ট্রেশন করুন](" + registrationUrl + ").\n" +
-                "Available Files and Prompts: " + JSON.stringify(allFilesList.concat(aiPromptsList)) + "\nPublished HTML Templates: " + JSON.stringify(templateList);
+                "Available Files and Prompts: " + JSON.stringify(allFilesList.concat(aiPromptsList));
 
             const apiResponse = await fetch(apiUrl, {
                 method: "POST",
@@ -1634,7 +1615,7 @@
             const legacyCss=source.code?'':(source.css_code||'');
             const previewDoc=buildUserTemplateDocument(code,legacyCss);
             const steps=Math.max(0,parseInt(t.required_ads||0,10)||0);
-            return '<article class="file-card" style="overflow:hidden;min-width:0"><div style="padding:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px"><h3 style="margin:0">'+escapeHtmlUser(t.title||'HTML Animation')+'</h3><span class="meta-pill">'+(steps>0?(steps+' Ad Steps'):'Free Download')+'</span></div><iframe title="'+escapeHtmlUser(t.title||'Animation')+' live preview" loading="lazy" sandbox="allow-scripts" srcdoc="'+escapeHtmlUser(previewDoc)+'" style="display:block;width:100%;height:300px;border:1px solid var(--border);border-radius:12px;background:#fff"></iframe><p style="color:var(--text-sub);font-size:12px;margin:10px 0 0">Live preview · Download unlock required</p><div style="display:flex;gap:8px;margin-top:12px"><button class="unlock-btn" style="flex:1" onclick="openHtmlTemplate(\''+t.id+'\')"><i class="fas fa-lock"></i> Unlock / Download</button><button class="copy-btn" onclick="copyPageLink(this,window.location.origin+'/template/'+encodeURIComponent(\''+t.id+'\'))"><i class="fas fa-share-alt"></i> Share</button></div></div></article>';
+            return '<article class="file-card" style="overflow:hidden;min-width:0"><div style="padding:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px"><h3 style="margin:0">'+escapeHtmlUser(t.title||'HTML Animation')+'</h3><span class="meta-pill">'+(steps>0?(steps+' Ad Steps'):'Free Download')+'</span></div><iframe title="'+escapeHtmlUser(t.title||'Animation')+' live preview" loading="lazy" sandbox="allow-scripts" srcdoc="'+escapeHtmlUser(previewDoc)+'" style="display:block;width:100%;height:300px;border:1px solid var(--border);border-radius:12px;background:#fff"></iframe><p style="color:var(--text-sub);font-size:12px;margin:10px 0 0">Live preview · Download unlock required</p><button class="unlock-btn" style="width:100%;margin-top:12px" onclick="openHtmlTemplate(\''+t.id+'\')"><i class="fas fa-lock"></i> Unlock / Download</button></div></article>';
         }));
         const grid=document.getElementById('templateAutoPreviewGrid');
         if(grid)grid.innerHTML='<div class="file-grid">'+cards.join('')+'</div>';
@@ -1650,7 +1631,7 @@
         let actions='';
         if(unlocked){actions='<button class="unlock-btn" id="templateDownloadBtn"><i class="fas fa-download"></i> Download HTML</button><button class="copy-btn" id="templateCopyBtn"><i class="fas fa-copy"></i> Copy Code</button><span class="meta-pill">Unlocked</span>';}
         else{actions='<button class="unlock-btn" id="templateWatchAdBtn"><i class="fas fa-play"></i> Watch Ad — Step '+Math.min(watched+1,req)+' / '+req+'</button><div style="width:100%;margin-top:10px"><div style="height:8px;background:var(--border);border-radius:20px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,(watched/Math.max(req,1))*100)+'%;background:var(--primary)"></div></div><small style="color:var(--text-sub)">Completed '+watched+' of '+req+' ad steps</small></div>';}
-        overlay.innerHTML='<div class="modal-content" style="max-width:900px;max-height:92vh;overflow:auto"><button class="modal-close" onclick="document.getElementById(\'htmlTemplateModal\').remove()"><i class="fas fa-times"></i></button><h2>'+escapeHtmlUser(t.title)+'</h2><div style="display:flex;gap:8px;align-items:center;margin:8px 0 14px"><span class="meta-pill">Live Preview</span><span class="meta-pill">'+(unlocked?'Unlocked':'Download Locked')+'</span></div><iframe title="'+escapeHtmlUser(t.title)+' preview" sandbox="allow-scripts" srcdoc="'+escapeHtmlUser(buildUserTemplateDocument(code,legacyCss)).replace(/\n/g,'&#10;')+'" style="width:100%;height:420px;border:1px solid var(--border);border-radius:14px;background:#fff"></iframe><div class="file-card" style="padding:12px;margin-top:12px"><strong><i class="fas fa-link"></i> Share this animation</strong><div style="display:flex;gap:8px;margin-top:8px"><input readonly value="'+escapeHtmlUser(window.location.origin+'/template/'+encodeURIComponent(id))+'" style="flex:1;min-width:0;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface)"><button class="copy-btn" onclick="copyPageLink(this,window.location.origin+'/template/'+encodeURIComponent(\''+id+'\'))"><i class="fas fa-copy"></i> Copy Link</button></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">'+actions+'</div><div style="margin-top:12px;color:var(--text-sub);font-size:12px">You can watch the full animation preview without unlocking. Download and copy are enabled only after all required ad steps are completed.</div></div>';
+        overlay.innerHTML='<div class="modal-content" style="max-width:900px;max-height:92vh;overflow:auto"><button class="modal-close" onclick="document.getElementById(\'htmlTemplateModal\').remove()"><i class="fas fa-times"></i></button><h2>'+escapeHtmlUser(t.title)+'</h2><div style="display:flex;gap:8px;align-items:center;margin:8px 0 14px"><span class="meta-pill">Live Preview</span><span class="meta-pill">'+(unlocked?'Unlocked':'Download Locked')+'</span></div><iframe title="'+escapeHtmlUser(t.title)+' preview" sandbox="allow-scripts" srcdoc="'+escapeHtmlUser(buildUserTemplateDocument(code,legacyCss)).replace(/\n/g,'&#10;')+'" style="width:100%;height:420px;border:1px solid var(--border);border-radius:14px;background:#fff"></iframe><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">'+actions+'</div><div style="margin-top:12px;color:var(--text-sub);font-size:12px">You can watch the full animation preview without unlocking. Download and copy are enabled only after all required ad steps are completed.</div></div>';
         document.body.appendChild(overlay);
         if(!unlocked){const watchBtn=document.getElementById('templateWatchAdBtn');if(watchBtn)watchBtn.onclick=function(){window.pendingTemplateReopenId=id;triggerAd(id,watched,req,'template');overlay.remove();};}
         else{document.getElementById('templateDownloadBtn').onclick=function(){downloadTemplateHtml(t,code,legacyCss);};document.getElementById('templateCopyBtn').onclick=function(){const full=buildUserTemplateDocument(code,legacyCss);navigator.clipboard.writeText(full).then(()=>showCopyToast('HTML + CSS copied'));};}
@@ -1683,7 +1664,6 @@
         } else if (path === '/files') { renderCollectionPage('files');
         } else if (path === '/prompts') { renderCollectionPage('prompts');
         } else if (path === '/templates') { await loadHtmlTemplates(); renderTemplates();
-        } else if (path.indexOf('/template/') === 0) { const templateId=decodeURIComponent(path.split('/template/')[1]||''); await loadHtmlTemplates(); renderTemplates(); if(templateId){setTimeout(function(){window.openHtmlTemplate(templateId);},300);}
         } else if (path.indexOf('/file/') === 0) {
             const slug = decodeURIComponent(path.split('/file/')[1]);
             if (slug) renderDetail('file', slug); else renderError('Not Found', 'File ID missing.');

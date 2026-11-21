@@ -1,9 +1,25 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/file/:slug", "destination": "/api/og?slug=:slug" },
-    { "source": "/banner/:id", "destination": "/api/og?banner=:id" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/(.*)", "destination": "/admin.html" }
+    {
+      "source": "/template/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/file/:slug",
+      "destination": "/api/og?slug=:slug"
+    },
+    {
+      "source": "/banner/:id",
+      "destination": "/api/og?banner=:id"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/admin.html"
+    }
   ]
 }

@@ -32,7 +32,7 @@
     <script data-cfasync="false" src="https://bauval.org/14/12c581abd9e7089666194369024aad62"></script>
     <script data-cfasync="false" src="https://abscloud.org/1/aa518407278d008068a3326ddbdce51e"></script>
 
-    <!-- Firebase v9 Compat Scripts (Matches Admin Panel) -->
+    <!-- Firebase v9 Compat Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
@@ -1421,9 +1421,11 @@
 
         const mdLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
         processed = processed.replace(mdLinkRegex, function(match, title, url) {
-            if (url.includes('/file/') || url.includes('/banner/')) {
-                const parts = url.split('/');
-                const fileId = parts[parts.length - 1];
+            if (url.includes('/file/') || url.includes('/banner/') || url.includes('/templates')) {
+                let fileId = '';
+                if (url.includes('/file/')) fileId = url.split('/file/')[1];
+                else if (url.includes('/banner/')) fileId = url.split('/banner/')[1];
+                else fileId = url.split('/').pop();
                 return '\n\n<div class="ai-file-card" data-file-id="' + fileId + '" data-file-ext="link"><div class="ai-file-icon">🔗</div><div class="ai-file-info"><div class="ai-file-title">' + escapeHtmlUser(title) + '</div><div class="ai-file-meta"><span class="ai-file-ext">FileHub</span><span class="ai-file-cta">Open Link →</span></div></div></div>\n\n';
             }
             return '<a href="' + url + '" target="_blank" rel="noopener" style="color:var(--primary); font-weight:600; text-decoration:underline;">' + title + '</a>';
@@ -1442,7 +1444,7 @@
         if (e.indexOf('mp3') !== -1) return '🎵';
         if (e.indexOf('jpg') !== -1 || e.indexOf('png') !== -1) return '🖼️';
         if (e.indexOf('ai') !== -1) return '🎨';
-        if (e.indexOf('exe') !== -1) return '💻';
+        if (e.indexOf('html') !== -1) return '💻';
         return '📁';
     }
 
@@ -1462,7 +1464,18 @@
                     card.addEventListener('click', function(e) {
                         e.preventDefault();
                         const fileId = card.dataset.fileId;
-                        if (fileId) { closeSheetCommon(); setTimeout(function() { navigateTo('/file/' + fileId); }, 350); }
+                        if (fileId) {
+                            closeSheetCommon();
+                            setTimeout(function() {
+                                if (isAIPromptId(fileId) || allFiles.some(f => f.id === fileId)) {
+                                    navigateTo('/file/' + fileId);
+                                } else if (allHtmlTemplates.some(t => t.id === fileId)) {
+                                    openHtmlTemplate(fileId);
+                                } else {
+                                    navigateTo('/file/' + fileId);
+                                }
+                            }, 350);
+                        }
                     });
                 });
             }, 50);
@@ -1526,7 +1539,7 @@
 
             const templatesList = allHtmlTemplates
                 .filter(function(t) { return t.status === 'approved'; })
-                .map(function(t) { return { id: t.id, title: t.title, extension: '.html', category: 'html-template', status: 'approved' }; });
+                .map(function(t) { return { id: t.id, title: t.title, extension: '.html', category: 'html-template', status: 'approved', url: window.location.origin + '/templates' }; });
 
             const adminInfo = settingsVal.admin || {};
             const adminName = adminInfo.name || 'FILE HUB এডমিন';
@@ -1538,7 +1551,7 @@
 
             const systemPrompt = "You are FileHub AI, a friendly and capable assistant for " + websiteName + ". Speak Bengali (বাংলা) unless the user asks in English.\n" +
                 "CREATOR RULE: If anyone asks who created you or who made you, proudly state that you were created by **ফাইল হাব এডমিন** (FileHub Admin).\n" +
-                "ADMIN INFO & SOCIAL: Admin Name: " + adminName + ". Bio: " + adminBio + ". Social Links: " + JSON.stringify(socialLinks) + ". If users ask about the admin, share these details.\n" +
+                "ADMIN INFO & SOCIAL RULE: DO NOT volunteer or talk about the admin details unless the user explicitly asks about the admin (e.g. 'এডমিন কে?', 'এডমিনের পরিচয় দাও', 'এডমিনের সোশ্যাল লিংক দাও'). When asked, provide Admin Name: " + adminName + ", Bio: " + adminBio + ", and Social Links: " + JSON.stringify(socialLinks) + ".\n" +
                 "INLINE CARD & LINK RULE: When mentioning any file, APK, AI Prompt, or HTML Template from the supplied list, ALWAYS provide its link in the Markdown format: [Item Title](Item URL). The system will automatically convert this into a stunning interactive card button for the user.\n" +
                 "REGISTRATION RULE: When the user asks how to register, sign up, or create an account, provide the official registration link: [FileHub-এ রেজিস্ট্রেশন করুন](" + registrationUrl + ").\n" +
                 "Available Files, Prompts, and HTML Templates: " + JSON.stringify(allFilesList.concat(aiPromptsList).concat(templatesList));
@@ -1661,12 +1674,13 @@
 
         clearInterval(bannerInterval); clearInterval(detailInterval);
         await loadData();
+        await loadHtmlTemplates();
         
         if (path === '/' || path === '/index.html' || path === '') {
             resetOGTags(); renderHome();
         } else if (path === '/files') { renderCollectionPage('files');
         } else if (path === '/prompts') { renderCollectionPage('prompts');
-        } else if (path === '/templates') { await loadHtmlTemplates(); renderTemplates();
+        } else if (path === '/templates') { renderTemplates();
         } else if (path.indexOf('/file/') === 0) {
             const slug = decodeURIComponent(path.split('/file/')[1]);
             if (slug) renderDetail('file', slug); else renderError('Not Found', 'File ID missing.');
